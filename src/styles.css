@@ -1,0 +1,116 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  --color-background: #f2eee6;
+  --color-foreground: #1b2330;
+  --color-card: #faf7f1;
+  --color-card-foreground: #1b2330;
+  --color-popover: #faf7f1;
+  --color-popover-foreground: #1b2330;
+  --color-muted: #e7e1d6;
+  --color-muted-foreground: #5e6774;
+  --color-primary: #165e5c;
+  --color-primary-foreground: #f4f7f4;
+  --color-secondary: #e4ddd1;
+  --color-secondary-foreground: #1b2330;
+  --color-accent: #d8e3e1;
+  --color-accent-foreground: #134e4a;
+  --color-destructive: #9b2c2c;
+  --color-destructive-foreground: #faf7f1;
+  --color-border: #d9d1c3;
+  --color-input: #d9d1c3;
+  --color-ring: #165e5c;
+  --color-live: #9b2c2c;
+  --color-rule: #e4dcce;
+  --color-sidebar: #ece6db;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius: 0.75rem;
+
+  --shadow-border:
+    0px 0px 0px 1px rgb(27 35 48 / 0.06),
+    0px 1px 2px -1px rgb(27 35 48 / 0.06),
+    0px 2px 4px 0px rgb(27 35 48 / 0.04);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body,
+  #app {
+    min-height: 100%;
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    font-family: var(--font-display);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+.note-paper {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 27px,
+    var(--color-rule) 28px
+  );
+  background-attachment: local;
+}
+
+.live-dot {
+  box-shadow: 0 0 0 0 rgb(155 44 44 / 0.45);
+  animation: live-pulse 1.6s ease-out infinite;
+}
+
+@keyframes live-pulse {
+  70% {
+    box-shadow: 0 0 0 8px rgb(155 44 44 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(155 44 44 / 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot {
+    animation: none;
+  }
+}
