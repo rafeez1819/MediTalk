@@ -1,0 +1,32 @@
+{
+  "name": "meditalk",
+  "displayName": "MediTalk",
+  "slug": "meditalk",
+  "scheme": "meditalk",
+  "orientation": "portrait",
+  "userInterfaceStyle": "light",
+  "backgroundColor": "#F2EEE6",
+  "primaryColor": "#165E5C",
+  "ios": {
+    "bundleIdentifier": "com.meditalk.app",
+    "supportsTablet": true,
+    "infoPlist": {
+      "CFBundleDisplayName": "MediTalk",
+      "CFBundleName": "MediTalk",
+      "NSMicrophoneUsageDescription": "MediTalk records consult audio to draft clinical notes on this device."
+    }
+  },
+  "android": {
+    "package": "com.meditalk.app",
+    "adaptiveIcon": {
+      "backgroundColor": "#165E5C"
+    }
+  },
+  "web": {
+    "bundler": "vite",
+    "name": "MediTalk",
+    "shortName": "MediTalk",
+    "themeColor": "#165E5C",
+    "backgroundColor": "#F2EEE6"
+  }
+}
