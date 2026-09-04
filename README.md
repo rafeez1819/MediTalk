@@ -46,7 +46,7 @@ http://localhost:8686/
 The server is configured to listen on all interfaces:
 
 ```text
-0.0.0.0:8686
+0.0.0.0:8080
 ```
 
 This is defined in the current `package.json`.
