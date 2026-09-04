@@ -12,6 +12,7 @@ Clone the repository and install dependencies:
 
 ```bash
 npm ci
+npm install
 ```
 
 Run the development server:
