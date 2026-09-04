@@ -18,6 +18,8 @@ npm install
 Run the development server:
 ```
 npm run dev
+npx install
+npx vite
 ```
 
 ## Overview
