@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "MediTalk",
+      "hasCanvas": false,
+      "bodyTextLen": 941,
+      "bodyTextHash": "c65d08ff0645d798b117576e0b61c8c816628dd225bbca1f4ffd649b4d6f7204",
+      "bodyTextPrefix": "MediTalk Start a visit BEDSIDE INTERPRETER Clear talk at the bed",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "MediTalk",
+      "hasCanvas": false,
+      "bodyTextLen": 927,
+      "bodyTextHash": "871cee1b938326d22c5c27c23b0fa34afbd802c14d070165eb21e58d557a3666",
+      "bodyTextPrefix": "MediTalk BEDSIDE INTERPRETER Clear talk at the bedside. Hand the",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
