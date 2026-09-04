@@ -17,7 +17,7 @@ Option: 2
 Clone the repository:
 
 ```bash
-git clone [<YOUR_REPOSITORY_URL>](https://github.com/rafeez1819/Resolume_D-Capture)
+git clone [<YOUR_REPOSITORY_URL>](https://github.com/rafeez1819/MediTalk)
 cd D-Capture
 ```
 
