@@ -5,6 +5,19 @@ MediTalk is a modern clinical documentation workspace for creating, reviewing, a
 > **Project status:** Development / prototype.
 >
 > This repository is not currently a production-ready patient-doctor consultation platform and must not be used as a substitute for a validated clinical system.
+>
+> ## Getting Started
+
+Clone the repository and install dependencies:
+
+```bash
+npm ci
+```
+
+Run the development server:
+```
+npm run dev
+```
 
 ## Overview
 
