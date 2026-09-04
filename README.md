@@ -75,3 +75,125 @@ Those capabilities are **not represented here as a complete production implement
 ├── app.json              # Application metadata
 ├── package.json          # Dependencies and scripts
 └── vite.config.ts        # Vite configuration
+Requirements
+Node.js 20+ recommended
+npm 10+ recommended
+PostgreSQL/Neon for persistent server-side data when enabled
+PGlite-based development support where configured by the application environment
+Getting Started
+1. Clone the repository
+git clone https://github.com/rafeez1819/MediTalk.git
+cd MediTalk
+2. Install dependencies
+npm ci
+3. Start the development server
+npm run dev
+
+The development server is configured to listen on port 8080.
+
+Available Scripts
+Command	Purpose
+npm run dev	Start the development server
+npm run build	Build the application and run database migration
+npm run build:dev	Development-mode production build
+npm run preview	Preview the production build
+npm run typecheck	Run TypeScript checks
+npm run lint	Run ESLint
+npm test	Run project tests
+npm run check:auth	Validate authentication invariants
+npm run format	Format the project with Prettier
+npm run db:migrate	Run database migrations
+Configuration
+
+Do not commit:
+
+Secrets
+API keys
+Database passwords
+Authentication secrets
+Production credentials
+
+Use the project's environment configuration mechanism and keep local secrets outside Git.
+
+Review:
+
+.grok/app-env.json
+
+and the authentication/database references before configuring a deployment environment.
+
+AI Features
+
+The current application includes AI-assisted clinical documentation functionality.
+
+AI output is assistive only and must be reviewed by an appropriately qualified professional before being relied upon.
+
+The repository currently references the xAI API for model-assisted functionality.
+
+Configure credentials through environment variables or the project's supported secret-management mechanism rather than hard-coding them.
+
+Security and Privacy
+
+This project deals with potentially sensitive clinical information.
+
+Before handling real patient data, a formal security and privacy review is required, including at minimum:
+
+Server-side authorization and tenant/data isolation
+Encryption in transit and at rest
+Secure secret management
+Audit logging
+Access logging and monitoring
+Secure file/document storage
+Session expiration and revocation
+Input validation and output sanitization
+Dependency and supply-chain review
+Backup and recovery controls
+Privacy/compliance review appropriate to the deployment jurisdiction
+
+Important: Do not use real patient-identifiable information in development, screenshots, fixtures, demos, or test data.
+
+Production Readiness
+
+The current archive should be treated as a development/prototype codebase.
+
+A production deployment requires additional validation and hardening, including:
+
+Infrastructure review
+Security testing
+Privacy/compliance review
+Operational monitoring
+Backup/recovery testing
+End-to-end testing
+Contributing
+Create a feature branch.
+Make the smallest focused change possible.
+Run type checking, linting, and tests.
+Review security and privacy implications for changes involving clinical data.
+Open a pull request describing the change and validation performed.
+
+Example:
+
+git checkout -b feature/my-change
+
+npm run typecheck
+npm run lint
+npm test
+
+git add .
+git commit -m "feat: describe the change"
+git push -u origin feature/my-change
+License
+
+This project is licensed under the MIT License. See LICENSE.
+
+Disclaimer
+
+MediTalk is software, not medical advice.
+
+The software and any AI-generated content are provided without a guarantee of clinical accuracy, completeness, suitability, or safety.
+
+Any clinical decision, diagnosis, treatment, or documentation created with assistance from this software must be independently reviewed by an appropriately qualified professional.
+
+
+**That's the format you want.** The triple backticks (` ``` `) are the Markdown fences. They tell GitHub to render commands and directory structures as code instead of running them together with the surrounding text.
+
+Also, I changed the `[svg](...)` line at the top because it isn't a useful README heading/link as written. If that SVG is supposed to be the **MediTalk logo**, it should be inserted as an actual image instead.
