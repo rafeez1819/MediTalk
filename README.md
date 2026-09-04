@@ -8,19 +8,104 @@ MediTalk is a modern clinical documentation workspace for creating, reviewing, a
 >
 > ## Getting Started
 
-Clone the repository and install dependencies:
+# Installation
+```
+Option: 1
+Double click "start.bat" 
+```
+Option: 2
+Clone the repository:
 
 ```bash
-npm ci
+git clone [<YOUR_REPOSITORY_URL>](https://github.com/rafeez1819/Resolume_D-Capture)
+cd D-Capture
+```
+
+Install dependencies:
+
+```bash
 npm install
 ```
 
-Run the development server:
-```
+---
+
+# Development
+
+Start the development server:
+
+```bash
 npm run dev
-npxminstall npx
-npx vite
 ```
+
+The current development script starts Vite on:
+
+```text
+http://localhost:8686/
+```
+
+The server is configured to listen on all interfaces:
+
+```text
+0.0.0.0:8686
+```
+
+This is defined in the current `package.json`.
+
+---
+
+# Available Commands
+
+```bash
+npm run dev
+```
+
+Start the development server.
+
+```bash
+npm run build
+```
+
+Create a production build and run the database migration step.
+
+```bash
+npm run build:dev
+```
+
+Create a development-mode production build.
+
+```bash
+npm run preview
+```
+
+Preview the production build.
+
+```bash
+npm run typecheck
+```
+
+Run TypeScript checks.
+
+```bash
+npm run test
+```
+
+Run the project tests.
+
+```bash
+npm run lint
+```
+
+Run ESLint.
+
+```bash
+npm run format
+```
+
+Format the project using Prettier.
+
+These scripts are currently defined by the project configuration.
+
+---
 
 ## Overview
 
