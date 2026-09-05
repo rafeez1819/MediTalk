@@ -34,9 +34,16 @@ export function checkedUrl(url) {
 export function checkedOutputPath(target, allowedDirs, label = "screenshot") {
   // Resolve first so `..` cannot slip past the prefix check.
   const abs = resolve(target);
-  const allowed = allowedDirs.some((dir) => abs.startsWith(dir.endsWith(sep) ? dir : dir + sep));
+  // Local (non-sandbox) QA runs write into the workspace under the current
+  // working directory; opt in via BROWSER_ALLOW_CWD=1 so the sandbox default
+  // (guard against writing anywhere) is unchanged.
+  const dirs =
+    process.env.BROWSER_ALLOW_CWD === "1" && process.cwd()
+      ? [...allowedDirs, process.cwd()]
+      : allowedDirs;
+  const allowed = dirs.some((dir) => abs.startsWith(dir.endsWith(sep) ? dir : dir + sep));
   if (!allowed) {
-    fail(`${label} path must be under ${allowedDirs.join(" or ")}, got ${abs}`);
+    fail(`${label} path must be under ${dirs.join(" or ")}, got ${abs}`);
   }
   return abs;
 }

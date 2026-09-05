@@ -10,3 +10,10 @@ coverage/
 *.log
 .DS_Store
 .grok
+.MediTalk/og-pending
+
+# Local QA / tooling scratch artifacts
+_tc-result.txt
+typecheck-out.txt
+emulator/
+scripts/_tmp_tc.mjs

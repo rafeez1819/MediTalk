@@ -2,10 +2,11 @@ import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { mkdirSync, mkdtempSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { test } from "node:test";
 import { promisify } from "node:util";
 import {
+  APP_ENV_LEGACY_REL_PATH,
   APP_ENV_REL_PATH,
   mergeAppEnv,
   parseAppEnv,
@@ -20,8 +21,9 @@ const PRINT_FLAG = "process.stdout.write(String(process.env.VITE_AUTH_ENABLED));
 function makeWorkspace(appEnvJson) {
   const root = mkdtempSync(join(tmpdir(), "app-env-"));
   if (appEnvJson !== undefined) {
-    mkdirSync(join(root, ".grok"), { recursive: true });
-    writeFileSync(join(root, APP_ENV_REL_PATH), appEnvJson);
+    const envFile = join(root, APP_ENV_REL_PATH);
+    mkdirSync(dirname(envFile), { recursive: true });
+    writeFileSync(envFile, appEnvJson);
   }
   return root;
 }
@@ -47,6 +49,13 @@ test("a missing app-env.json is a clean no-op", () => {
 
 test("reads the app env from a workspace", () => {
   const root = makeWorkspace('{"VITE_AUTH_ENABLED":"false"}');
+  assert.deepEqual(readAppEnv(root), { VITE_AUTH_ENABLED: "false" });
+});
+
+test("falls back to the legacy .grok/app-env.json location", () => {
+  const root = mkdtempSync(join(tmpdir(), "app-env-legacy-"));
+  mkdirSync(join(root, dirname(APP_ENV_LEGACY_REL_PATH)), { recursive: true });
+  writeFileSync(join(root, APP_ENV_LEGACY_REL_PATH), '{"VITE_AUTH_ENABLED":"false"}');
   assert.deepEqual(readAppEnv(root), { VITE_AUTH_ENABLED: "false" });
 });
 
@@ -113,11 +122,21 @@ test("a signal-killed command is never reported as success", async () => {
   );
 });
 
-test("the CLI still runs when invoked through a symlinked path", async () => {
+test("the CLI still runs when invoked through a symlinked path", async (t) => {
   // node realpaths import.meta.url but not process.argv[1], so a raw comparison
   // turns the wrapper into a no-op that exits 0 without starting anything.
   const link = join(mkdtempSync(join(tmpdir(), "app-env-link-")), "scripts");
-  symlinkSync(join(projectRoot(), "scripts"), link);
+  try {
+    symlinkSync(join(projectRoot(), "scripts"), link);
+  } catch (err) {
+    // Symlinks need admin rights / developer mode on Windows; the check it
+    // exercises is Linux-sandbox-specific, so skip rather than fail the gate.
+    if (process.platform === "win32" && err?.code === "EPERM") {
+      t.skip("symlinks are not permitted on this Windows host");
+      return;
+    }
+    throw err;
+  }
   const { stdout } = await execFileAsync(process.execPath, [
     join(link, "with-app-env.mjs"),
     process.execPath,

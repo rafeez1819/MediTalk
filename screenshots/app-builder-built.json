@@ -1,5 +1,5 @@
 {
-  "url": "http://127.0.0.1:8080/",
+  "url": "http://127.0.0.1:8081/",
   "viewports": {
     "desktop": {
       "width": 1280,
@@ -13,7 +13,7 @@
       "horizontalOverflow": false,
       "consoleErrors": [],
       "pageErrors": [],
-      "screenshot": "C:\\Users\\hp\\Downloads\\MediTalk\\screenshots\\app-builder-preview.png"
+      "screenshot": "C:\\Users\\hp\\Downloads\\MediTalk\\screenshots\\app-builder-built.png"
     },
     "mobile": {
       "width": 390,
@@ -27,10 +27,12 @@
       "horizontalOverflow": false,
       "consoleErrors": [],
       "pageErrors": [],
-      "screenshot": "C:\\Users\\hp\\Downloads\\MediTalk\\screenshots\\app-builder-preview-mobile.png"
+      "screenshot": "C:\\Users\\hp\\Downloads\\MediTalk\\screenshots\\app-builder-built-mobile.png"
     }
   },
   "brandWarnings": [],
   "authWarnings": [],
-  "verdictFile": "C:\\Users\\hp\\Downloads\\MediTalk\\screenshots\\app-builder-preview.json"
+  "verdictFile": "C:\\Users\\hp\\Downloads\\MediTalk\\screenshots\\app-builder-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
 }

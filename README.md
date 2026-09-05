@@ -68,7 +68,7 @@ Testing: Node test runner and Playwright-oriented tooling
 
 Project Structure
 
-. ├── src/ │ ├── components/ # Application UI and workspace components │ ├── lib/ # Application logic, data, auth, AI and state │ ├── routes/ # TanStack Router routes │ ├── router.tsx # Router configuration │ └── styles.css # Global styling ├── scripts/ # Build, migration, auth and QA utilities ├── public/ # Static assets ├── screenshots/ # Development/QA screenshots ├── .grok/ # Grok/App Builder project references and skills ├── app.json # Application metadata ├── package.json # Dependencies and scripts └── vite.config.ts # Vite configuration
+. ├── src/ │ ├── components/ # Application UI and workspace components │ ├── lib/ # Application logic, data, auth, AI and state │ ├── routes/ # TanStack Router routes │ ├── router.tsx # Router configuration │ └── styles.css # Global styling ├── scripts/ # Build, migration, auth and QA utilities ├── public/ # Static assets ├── screenshots/ # Development/QA screenshots ├── .MediTalk/ # MediTalk/App Builder project references and skills ├── app.json # Application metadata ├── package.json # Dependencies and scripts └── vite.config.ts # Vite configuration
 
 Requirements
 

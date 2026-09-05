@@ -30,7 +30,7 @@
 import { existsSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { OG_SITE_REL_PATH, readOgSite, siteHasCustomCard } from "./grok-pwa-shared.mjs";
+import { OG_SITE_REL_PATH, readOgSite, siteHasCustomCard } from "./MediTalk-pwa-shared.mjs";
 
 // Over this, link scrapers (X card previews included) time out or skip the
 // image, so the card silently fails to unfurl. The og skill's JPEG contract
@@ -38,7 +38,10 @@ import { OG_SITE_REL_PATH, readOgSite, siteHasCustomCard } from "./grok-pwa-shar
 export const MAX_CARD_BYTES = 600 * 1024;
 
 // Written by the brand task while it generates, removed when it finishes.
-export const OG_PENDING_REL_PATH = ".grok/og-pending";
+// Workspaces archived before the `.grok` → `.MediTalk` rename may still carry
+// the marker at the historical path — both are honored.
+export const OG_PENDING_REL_PATH = ".MediTalk/og-pending";
+export const OG_PENDING_LEGACY_REL_PATH = ".grok/og-pending";
 // A Stop mid-generation leaves the marker behind, so the demotion expires
 // instead of hiding a missing card forever on that workspace.
 export const OG_PENDING_MAX_AGE_MS = 10 * 60 * 1000;
@@ -48,12 +51,15 @@ export function siteDeclaresOgTypeGame(site) {
 }
 
 export function ogPendingActive(workspaceRoot, now = Date.now()) {
-  try {
-    const { mtimeMs } = statSync(join(workspaceRoot, OG_PENDING_REL_PATH));
-    return now - mtimeMs < OG_PENDING_MAX_AGE_MS;
-  } catch {
-    return false;
+  for (const rel of [OG_PENDING_REL_PATH, OG_PENDING_LEGACY_REL_PATH]) {
+    try {
+      const { mtimeMs } = statSync(join(workspaceRoot, rel));
+      if (now - mtimeMs < OG_PENDING_MAX_AGE_MS) return true;
+    } catch {
+      // No marker at this path — try the next (missing file).
+    }
   }
+  return false;
 }
 
 /**
@@ -63,9 +69,12 @@ export function ogPendingActive(workspaceRoot, now = Date.now()) {
  * In flight is silence, not a note: callers report this array as warnings, so
  * anything left in it — however it is worded — reaches the agent as one.
  */
+/** The workspace root this script ships in (the sandbox maps it to /workspace). */
+const DEFAULT_WORKSPACE_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
 export function computeBrandWarnings({
   hasCanvas,
-  workspaceRoot = "/workspace",
+  workspaceRoot = DEFAULT_WORKSPACE_ROOT,
   now = Date.now(),
 }) {
   if (ogPendingActive(workspaceRoot, now)) return [];
@@ -80,8 +89,16 @@ export function computeBrandWarnings({
  * placeholder is a failure, not the plain-utility default the parent's gate
  * leaves alone.
  */
-function brandWarningsOnDisk({ hasCanvas, workspaceRoot = "/workspace", cardRequired = false }) {
-  const skillPath = join(workspaceRoot, ".grok/skills/og/SKILL.md");
+function brandWarningsOnDisk({
+  hasCanvas,
+  workspaceRoot = DEFAULT_WORKSPACE_ROOT,
+  cardRequired = false,
+}) {
+  // Prefer the renamed skills dir; fall back to the historical `.grok` layout.
+  const skillRelPath = existsSync(join(workspaceRoot, ".MediTalk/skills/og/SKILL.md"))
+    ? ".MediTalk/skills/og/SKILL.md"
+    : ".grok/skills/og/SKILL.md";
+  const skillPath = join(workspaceRoot, skillRelPath);
   const sitePath = join(workspaceRoot, OG_SITE_REL_PATH);
   const site = readOgSite(workspaceRoot);
   const cardPath = [

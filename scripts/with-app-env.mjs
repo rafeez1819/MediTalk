@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 /**
- * Run a command with `.grok/app-env.json` merged into its environment.
+ * Run a command with the app env (`.MediTalk/app-env.json`) merged into its
+ * environment. On workspaces that still carry the file's historical
+ * `.grok/app-env.json` name, that path is used as a fallback.
  *
  * `dev`, `build` and `preview` all route through this wrapper, so the dev
  * server, the built bundle and the preview server can never disagree about
@@ -20,12 +22,15 @@
  * `process.env`, which is why the merge has to happen before Vite starts.
  */
 import { spawn } from "node:child_process";
-import { readFileSync, realpathSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { constants as osConstants } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const APP_ENV_REL_PATH = ".grok/app-env.json";
+export const APP_ENV_REL_PATH = ".MediTalk/app-env.json";
+// Workspaces archived before the directory rename carried the same payload at
+// this historical location — read it when the canonical file is absent.
+export const APP_ENV_LEGACY_REL_PATH = ".grok/app-env.json";
 
 const VITE_PREFIX = "VITE_";
 
@@ -53,11 +58,14 @@ export function parseAppEnv(text) {
 
 /** The app env recorded under `root`, or `{}` when the file is absent. */
 export function readAppEnv(root) {
-  try {
-    return parseAppEnv(readFileSync(join(root, APP_ENV_REL_PATH), "utf8"));
-  } catch {
-    return {};
+  for (const rel of [APP_ENV_REL_PATH, APP_ENV_LEGACY_REL_PATH]) {
+    try {
+      return parseAppEnv(readFileSync(join(root, rel), "utf8"));
+    } catch {
+      // Try the next candidate (missing file, or legacy location).
+    }
   }
+  return {};
 }
 
 /** File values under the process environment: an explicit override wins. */
@@ -104,6 +112,32 @@ export function isMainModule(moduleUrl) {
   }
 }
 
+/**
+ * Wrap a single argument for cmd.exe when it needs quoting (spaces or quotes).
+ * Arguments free of whitespace pass through untouched so cmd metacharacters
+ * like `;` or `&` in a value (e.g. a `-e '…'` payload) are still interpreted
+ * by cmd — that is unavoidable whenever a `.cmd` shim forces a shell, which is
+ * why this path is only used for npm's shims, never for arbitrary commands.
+ */
+export function quoteCmdArg(token) {
+  if (!/[\s"]/.test(token)) return token;
+  return `"${String(token).replace(/"/g, '\\"')}"`;
+}
+
+/**
+ * Windows cannot exec npm's `node_modules/.bin/*.cmd` shims with a plain
+ * `spawn` (only a shell can run `.cmd` files). When spawning a bare name like
+ * `vite` fails with ENOENT for that reason, re-run it through cmd.exe with the
+ * resolved shim. Direct executables (a full path to `node.exe`, say) succeed
+ * on the first try and never touch the shell, so their argv is never
+ * re-parsed by cmd.
+ */
+export function windowsShimCommandLine(command, args) {
+  const shim = join(projectRoot(), "node_modules", ".bin", `${command}.cmd`);
+  if (!existsSync(shim)) return null;
+  return [shim, ...args].map(quoteCmdArg).join(" ");
+}
+
 function main(argv) {
   const [command, ...args] = argv;
   if (!command) {
@@ -111,16 +145,50 @@ function main(argv) {
     process.exit(2);
   }
   const env = mergeAppEnv(readAppEnv(projectRoot()), process.env);
-  const child = spawn(command, args, { stdio: "inherit", env });
-  // The dev server is long-running and is stopped by signalling this wrapper.
-  for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
-    process.on(signal, () => child.kill(signal));
+  const forwardSignals = (child) => {
+    // The dev server is long-running and is stopped by signalling this wrapper.
+    for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
+      process.on(signal, () => child.kill(signal));
+    }
+  };
+
+  const start = (cmd, opts) => {
+    const { args: childArgs = [], ...rest } = opts;
+    const child = childArgs.length > 0 ? spawn(cmd, childArgs, rest) : spawn(cmd, rest);
+    forwardSignals(child);
+    child.on("error", (err) => {
+      console.error(`[with-app-env] failed to run ${command}:`, err?.message || err);
+      process.exit(127);
+    });
+    child.on("exit", (code, signal) => {
+      process.exit(exitStatusFromChild(code, signal));
+    });
+  };
+
+  if (process.platform !== "win32") {
+    start(command, { stdio: "inherit", env, args });
+    return;
   }
-  child.on("error", (err) => {
-    console.error(`[with-app-env] failed to run ${command}:`, err?.message || err);
-    process.exit(127);
+
+  // Try the bare command first (a real executable spawns fine, argv intact).
+  const first = spawn(command, args, { stdio: "inherit", env });
+  first.on("error", () => {
+    // ENOENT almost certainly means `command` is an npm `.cmd` shim that only
+    // a shell can run — re-run it through cmd.exe before giving up.
+    const cmdline = windowsShimCommandLine(command, args);
+    if (!cmdline) {
+      console.error(`[with-app-env] failed to run ${command}: command not found`);
+      process.exit(127);
+    }
+    start(cmdline, {
+      stdio: "inherit",
+      env,
+      shell: true,
+      windowsVerbatimArguments: true,
+    });
   });
-  child.on("exit", (code, signal) => {
+  first.on("exit", (code, signal) => {
+    // The bare spawn actually ran (no ENOENT) — report its result directly.
     process.exit(exitStatusFromChild(code, signal));
   });
 }

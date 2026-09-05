@@ -6,16 +6,16 @@
  * - `?install=1&platform=ios` on a document path → the Home Screen tutorial,
  *   bundled into the server build via `?raw` (the public/ directory is CDN
  *   static output on Vercel and not readable from the function).
- * - `/__grok/manifest.webmanifest` → per-app-named manifest (kept out of
+ * - `/__MediTalk/manifest.webmanifest` → per-app-named manifest (kept out of
  *   public/ so this dynamic response is the only one).
  * - Other HTML documents → stream-inject PWA + OG head tags at `</head>`.
- *   OG identity is baked via `virtual:grok-og-identity` at `vite build`
+ *   OG identity is baked via `virtual:meditalk-og-identity` at `vite build`
  *   (this function cannot read `src/lib/og/site.json` or `public/og.jpg`).
  *   This must be a middleware transforming `next()`: h3 discards the `response`
  *   runtime hook's return value, and `render:html` does not exist in Nitro v3.
  */
 import installPageTemplate from "../../scripts/install-page.html?raw";
-import { grokOgIdentity } from "virtual:grok-og-identity";
+import { meditalkOgIdentity } from "virtual:meditalk-og-identity";
 import {
   acceptsHtml,
   createHeadInjector,
@@ -23,14 +23,14 @@ import {
   isInstallQuery,
   renderInstallPageHtml,
   renderWebManifest,
-} from "../../scripts/grok-pwa-shared.mjs";
+} from "../../scripts/MediTalk-pwa-shared.mjs";
 
-interface GrokPwaEvent {
+interface MediTalkPwaEvent {
   url: URL;
   req: { method: string; headers: Headers };
 }
 
-function requestHost(event: GrokPwaEvent): string {
+function requestHost(event: MediTalkPwaEvent): string {
   return (
     event.req.headers.get("x-forwarded-host") ?? event.req.headers.get("host") ?? event.url.host
   );
@@ -39,7 +39,7 @@ function requestHost(event: GrokPwaEvent): string {
 function injectHeadStreaming(response: Response, host: string): Response {
   const injector = createHeadInjector({
     host,
-    site: grokOgIdentity.site,
+    site: meditalkOgIdentity.site,
   });
   const transformed = response.body!.pipeThrough(
     new TransformStream<Uint8Array, Uint8Array>({
@@ -60,8 +60,8 @@ function injectHeadStreaming(response: Response, host: string): Response {
   });
 }
 
-export default async function grokPwaMiddleware(
-  event: GrokPwaEvent,
+export default async function MediTalkPwaMiddleware(
+  event: MediTalkPwaEvent,
   next: () => unknown | Promise<unknown>,
 ): Promise<unknown> {
   const method = (event.req.method ?? "GET").toUpperCase();
@@ -70,7 +70,7 @@ export default async function grokPwaMiddleware(
   const path = event.url.pathname;
   const urlWithQuery = path + event.url.search;
 
-  if (path === "/__grok/manifest.webmanifest" || path === "/__grok/manifest.json") {
+  if (path === "/__MediTalk/manifest.webmanifest" || path === "/__MediTalk/manifest.json") {
     return new Response(renderWebManifest(requestHost(event)), {
       headers: {
         "content-type": "application/manifest+json; charset=utf-8",

@@ -86,7 +86,7 @@ img {
 }
 
 .powered-by,
-.powered-grok {
+.powered-meditalk {
   font-size: var(--text-footnote);
   font-weight: var(--weight-medium);
   letter-spacing: -0.01em;
@@ -105,14 +105,14 @@ img {
   height: 20px;
 }
 
-.grok-logo {
+.meditalk-logo {
   display: block;
   width: 14px;
   height: 14px;
   flex: 0 0 14px;
 }
 
-.powered-grok {
+.powered-meditalk {
   color: rgba(255, 255, 255, 0.6);
 }
 

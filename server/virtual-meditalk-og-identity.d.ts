@@ -1,5 +1,5 @@
-declare module "virtual:grok-og-identity" {
-  export const grokOgIdentity: {
+declare module "virtual:meditalk-og-identity" {
+  export const meditalkOgIdentity: {
     site: {
       title?: string;
       description?: string;

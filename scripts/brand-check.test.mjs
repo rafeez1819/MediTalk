@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, readFileSync, utimesSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -33,9 +33,9 @@ function makeWorkspace({
   const root = mkdtempSync(join(tmpdir(), "brand-check-"));
   mkdirSync(join(root, "public"), { recursive: true });
   mkdirSync(join(root, "src/lib/og"), { recursive: true });
-  mkdirSync(join(root, ".grok"), { recursive: true });
   if (pendingAgeMs !== undefined) {
     const marker = join(root, OG_PENDING_REL_PATH);
+    mkdirSync(dirname(marker), { recursive: true });
     writeFileSync(marker, "");
     const when = new Date(Date.now() - pendingAgeMs);
     utimesSync(marker, when, when);
@@ -300,15 +300,31 @@ test("cli: a non-game with a compliant card passes", () => {
 
 // --- the prompts are the only enforcement here, so pin them to the code ---
 
+// The og skill ships under `.MediTalk/skills/og` in renamed workspaces and at
+// the historical `.grok/skills/og` elsewhere — read whichever is present.
+const OG_SKILL_REL_DIR = existsSync(join(TEMPLATE_ROOT, ".MediTalk/skills/og"))
+  ? ".MediTalk/skills/og"
+  : ".grok/skills/og";
 const readDoc = (rel) => readFileSync(join(TEMPLATE_ROOT, rel), "utf8");
+const readOgSkillDoc = (name = "SKILL.md") =>
+  readFileSync(join(TEMPLATE_ROOT, OG_SKILL_REL_DIR, name), "utf8");
 
 test("SKILL.md and AGENTS.md name the marker path and bound this script uses", () => {
   // Prose wraps, so the minute count may straddle a line break.
   const bound = new RegExp(`${OG_PENDING_MAX_AGE_MS / 60_000}\\s+minutes`);
-  for (const rel of [".grok/skills/og/SKILL.md", "AGENTS.md"]) {
-    const doc = readDoc(rel);
-    assert.ok(doc.includes(`/workspace/${OG_PENDING_REL_PATH}`), `${rel}: marker path`);
-    assert.ok(bound.test(doc), `${rel}: staleness bound`);
+  // The canonical marker lives at `.MediTalk/og-pending`; pre-rename snapshots
+  // still reference `.grok/og-pending`, which ogPendingActive also honors.
+  const markerPaths = [`/workspace/${OG_PENDING_REL_PATH}`, "/workspace/.grok/og-pending"];
+  const docs = [
+    { rel: `${OG_SKILL_REL_DIR}/SKILL.md`, text: readOgSkillDoc() },
+    { rel: "AGENTS.md", text: readDoc("AGENTS.md") },
+  ];
+  for (const { rel, text } of docs) {
+    assert.ok(
+      markerPaths.some((p) => text.includes(p)),
+      `${rel}: marker path`,
+    );
+    assert.ok(bound.test(text), `${rel}: staleness bound`);
   }
 });
 
@@ -317,7 +333,7 @@ test("SKILL.md and AGENTS.md name the marker path and bound this script uses", (
 // feature adds to it this test's business.
 const PROHIBITION_SECTIONS = [
   {
-    rel: ".grok/skills/og/SKILL.md",
+    rel: `${OG_SKILL_REL_DIR}/SKILL.md`,
     label: '§ "Brand-asset pass"',
     from: "## Brand-asset pass:",
     until: /\n## /,
@@ -362,7 +378,7 @@ test("the sections that own the brand-task prohibition never affirm a wait", () 
 });
 
 test("SKILL.md tells the pass to self-check with the flag this CLI accepts", () => {
-  const skill = readDoc(".grok/skills/og/SKILL.md");
+  const skill = readOgSkillDoc();
   const invocations = skill.match(/node scripts\/brand-check\.mjs[^\n`]*/g) ?? [];
   assert.ok(invocations.length > 0);
   for (const line of invocations) {

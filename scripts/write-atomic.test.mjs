@@ -166,7 +166,11 @@ test("cli: relative paths follow the script's root, not the caller's cwd", () =>
 
 test("every hand-over the og skill prints is one this script accepts", () => {
   // The card and banner recipes live in the skill's references/, not SKILL.md.
-  const skillDir = join(TEMPLATE_ROOT, ".grok/skills/og");
+  // Renamed workspaces ship the skill under `.MediTalk/skills/og`; historical
+  // snapshots keep `.grok/skills/og`.
+  const skillDir = existsSync(join(TEMPLATE_ROOT, ".MediTalk/skills/og"))
+    ? join(TEMPLATE_ROOT, ".MediTalk/skills/og")
+    : join(TEMPLATE_ROOT, ".grok/skills/og");
   const docs = [
     join(skillDir, "SKILL.md"),
     ...readdirSync(join(skillDir, "references")).map((f) => join(skillDir, "references", f)),
