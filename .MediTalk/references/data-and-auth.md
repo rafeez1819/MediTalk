@@ -85,11 +85,11 @@ covers anonymous viewers and no-gate contexts.
 
 **Never call connector or AppData APIs from frontend code.**
 
-| Allowed | Forbidden |
-| --- | --- |
+| Allowed                                                                                                               | Forbidden                                                                                                         |
+| --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | `createServerFn({ method: "POST" }).handler` that dynamic-imports `@/lib/app-data/client.server` and calls `callTool` | Importing `@/lib/app-data/client.server` from a route component, `useEffect`, event handler, or any client module |
-| UI calling that **server function** only | Browser `fetch("/__gate/app-data/…")`, `fetch` to the connectors host, or any direct CallTool from the client |
-| Types/constants from `@/lib/app-data` (no network) | Putting `x-connector-access-token`, connector JWTs, or gate secrets in client state, props, or `VITE_*` env |
+| UI calling that **server function** only                                                                              | Browser `fetch("/__gate/app-data/…")`, `fetch` to the connectors host, or any direct CallTool from the client     |
+| Types/constants from `@/lib/app-data` (no network)                                                                    | Putting `x-connector-access-token`, connector JWTs, or gate secrets in client state, props, or `VITE_*` env       |
 
 **Flow (required):** browser → **this app's** `createServerFn` → **app backend**
 SDK → public connectors host (`connectors.grok.me`, **auth required**) → gate.

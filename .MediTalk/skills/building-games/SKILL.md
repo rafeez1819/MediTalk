@@ -26,6 +26,7 @@ writing WASD, steering, or flight input. Vehicle/flight demos often ship with
 A/D flipped if you only read this file or a single genre playbook.
 
 **Scope note — single-player, bots, or small P2P co-op:**
+
 - Ship **single-player** or **single-player + AI/bots** by default.
 - **2–8 player co-op / casual realtime** (shared cursors, party games, casual
   action among friends) is supported — use the **`multiplayer-p2p` skill**
@@ -34,6 +35,7 @@ A/D flipped if you only read this file or a single genre playbook.
   that can’t connect.
 
 **References (load on demand):**
+
 - **`controls` skill** (`../controls/`) — **required** for movement/steer/flight:
   player-visible A/D, inverted-steer anti-pattern, flight ailerons, mandatory
   self-test + `window.__controlsTest`. Not optional for vehicles/planes.
@@ -109,13 +111,13 @@ forward = (-sin(yaw), 0, -cos(yaw))
   tip with forward (`geo.rotateX(Math.PI/2)`).
 - **Orienting a mesh to face `forward`** (meshes face **+Z**): simplest correct way
   is `mesh.lookAt(mesh.position.clone().add(forward))`. To build the basis by hand,
-  set the **+Z column to `forward`** and choose the x-axis that keeps it a *proper*
+  set the **+Z column to `forward`** and choose the x-axis that keeps it a _proper_
   right-handed rotation (`det = +1`):
   `xAxis = normalize(cross(up, forward))`, then `makeBasis(xAxis, up, forward)`.
   Note this is `cross(up, forward)` — **not** the movement `right = cross(forward, up)`
   from §2. Targeting +Z (instead of a camera's −Z) flips the x-axis sign so that
   `xAxis × up = forward`; the frame stays right-handed (no mirroring). Do **not** use
-  `makeBasis(xAxis, up, -forward)` for a mesh — that targets −forward (the *camera*
+  `makeBasis(xAxis, up, -forward)` for a mesh — that targets −forward (the _camera_
   convention) so the mesh faces **backwards**.
 - **Orienting a camera** to look along `forward` (cameras look **−Z**): set the +Z
   column to `-forward` — `xAxis = normalize(cross(forward, up))`, then
@@ -177,6 +179,7 @@ forward = (-sin(yaw), 0, -cos(yaw))
   sandbox.
 
 ## 7. Audio, save, feel
+
 - **Audio**: unlock `AudioContext` on the first user gesture (tap-to-start) or iOS
   is silent; re-resume on `visibilitychange`. (`references/audio.md`)
 - **Save**: `localStorage`/IndexedDB with a `version` field + migrations.
@@ -184,6 +187,7 @@ forward = (-sin(yaw), 0, -cos(yaw))
   perceived-quality lift. Keep presentation separate from simulation.
 
 ## 8. Mobile
+
 - Distinguish canvas buffer size from CSS size; respect `devicePixelRatio`.
 - `touch-action: none`, letterbox-fit to a base resolution, handle orientation.
 - Touch controls (virtual joystick + action buttons), ≥44px targets.
@@ -191,6 +195,7 @@ forward = (-sin(yaw), 0, -cos(yaw))
 ---
 
 ## Stack / engine choice
+
 - **3D → three.js**, ideally via **@react-three/fiber + drei** (fits the React
   app; drei gives pointer-lock/controls/loaders) + **@react-three/rapier** for
   physics/character controllers. See `references/3d-libs.md`.
@@ -200,6 +205,7 @@ forward = (-sin(yaw), 0, -cos(yaw))
   land in `package.json` so the Vercel build has them).
 
 ## Finish criteria (before "done")
+
 - Loads with **no console errors**; visible gameplay (not a blank canvas).
 - **`controls` skill self-test passed** (A = left / D = right from chase cam
   while moving forward; flip one sign if inverted). Not screenshot-only.

@@ -33,15 +33,15 @@ run the pipeline skills:
 
 ## Unprompted engine-ready defaults
 
-| When asked for... | Deliver, without being told... |
-|---|---|
-| a character/creature/prop sprite | isolated subject, flat single-color keyable background (**`#FF00FF`** when using generate2dsprite/video2dsprite), clean silhouette, no baked ground scene or cast shadow |
-| anything that moves/animates | a frame SEQUENCE that loops cleanly (see game-animation-frames; execute via video2dsprite/generate2dsprite) |
-| a sprite sheet | uniform implicit cells, NO divider lines, subject at the identical position per cell so frames crop at width/cols × height/rows — or build it yourself: frames + PIL composite |
-| ground/terrain/water/walls | seamlessly tileable (verify with a real 2×2 composite), no landmark motifs, non-directional lighting where rotation might be used |
-| UI panels/frames/buttons | scale-survivable (9-slice: corner ornament, uniform edges), no text ever (games localize), state variants geometry-identical |
-| the same character/object again | edit-chained from your existing base image, never regenerated fresh |
-| icons | one style contract across the set, uniform padding, legible at 32px |
+| When asked for...                | Deliver, without being told...                                                                                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| a character/creature/prop sprite | isolated subject, flat single-color keyable background (**`#FF00FF`** when using generate2dsprite/video2dsprite), clean silhouette, no baked ground scene or cast shadow       |
+| anything that moves/animates     | a frame SEQUENCE that loops cleanly (see game-animation-frames; execute via video2dsprite/generate2dsprite)                                                                    |
+| a sprite sheet                   | uniform implicit cells, NO divider lines, subject at the identical position per cell so frames crop at width/cols × height/rows — or build it yourself: frames + PIL composite |
+| ground/terrain/water/walls       | seamlessly tileable (verify with a real 2×2 composite), no landmark motifs, non-directional lighting where rotation might be used                                              |
+| UI panels/frames/buttons         | scale-survivable (9-slice: corner ornament, uniform edges), no text ever (games localize), state variants geometry-identical                                                   |
+| the same character/object again  | edit-chained from your existing base image, never regenerated fresh                                                                                                            |
+| icons                            | one style contract across the set, uniform padding, legible at 32px                                                                                                            |
 
 Deliver organized, exactly-named files; if the request leaves counts or
 naming to you, choose sensible names and document them in a manifest/record.

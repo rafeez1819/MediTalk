@@ -5,7 +5,6 @@ For the common "everyone on this app plays together" shape, copy this hook to
 part of the kit. It captures `room`/`name` on first render, so changing them
 later requires remounting the component (key it on the room code).
 
-
 ```ts
 /**
  * React binding for P2PRoom. Identity and room id are captured once on mount
@@ -98,9 +97,7 @@ export function useP2PRoom(options: UseP2PRoomOptions = {}): P2PRoomHandle {
 }
 ```
 
-
 Used in a component:
-
 
 ```tsx
 import { useP2PRoom } from "@/lib/multiplayer";

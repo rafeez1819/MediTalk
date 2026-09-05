@@ -36,7 +36,7 @@ favicon link ships a blank tab icon no local check catches.
 
 ## Decide: which card this app gets
 
-**Default: a custom card** from the app's own art — games of every kind and rendering tech (Canvas/WebGL *and*
+**Default: a custom card** from the app's own art — games of every kind and rendering tech (Canvas/WebGL _and_
 DOM board, card, word, puzzle, quiz: a tic-tac-toe grid of divs is still a game), whimsical apps, creative
 tools, content- and brand-forward pages. **When in doubt, make the custom card.**
 

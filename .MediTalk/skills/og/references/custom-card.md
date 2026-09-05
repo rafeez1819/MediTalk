@@ -21,7 +21,7 @@ contract only (size, lockup, wiring).
      left and right into a wider frame; keep the title lettering and
      central subject exactly as they are".
    - **Optional — true 2:1 via the xAI Images API:** `POST
-     https://api.x.ai/v1/images/generations` with `"aspect_ratio": "2:1"`
+https://api.x.ai/v1/images/generations` with `"aspect_ratio": "2:1"`
      and `response_format: "b64_json"` using the injected `XAI_API_KEY`
      (see the `xai-api` skill). 2mp 2:1 is 1984×992; normalize then trims
      only ~2.4% per side and nothing vertical.
@@ -34,6 +34,7 @@ contract only (size, lockup, wiring).
    on whatever canvas you have and keep the entire title block inside the
    **middle half** of the frame height, with the crop-clipping check in
    step 6 as the gate.
+
 2. **Bake the title in like a game cover.** Store-page covers (Stardew Valley,
    Cuphead) lead with a short stylized logo-type title. Put the exact app name
    in quotes in the prompt; 1–3 strong words; optional short tagline under the
@@ -49,7 +50,7 @@ contract only (size, lockup, wiring).
      the canvas comes back off-ratio — an edit that pinned to its input's
      ratio, or a model miss — so **check the raw canvas dimensions before
      cropping**, and re-ratio first if it isn't ~16:9 or 2:1.
-3. **Verify glyphs *and* layout on read-back** (see `imagine` / `game-asset-core`
+3. **Verify glyphs _and_ layout on read-back** (see `imagine` / `game-asset-core`
    for the blind-describe loop). On a garble or layout miss, **regenerate with a
    corrected prompt** — never try to move a logo with `imagine_image_to_image` (frame
    translation / seams). After two failed attempts, ship the card **artwork-only**
@@ -59,6 +60,7 @@ contract only (size, lockup, wiring).
    share card is a single static PNG; there is no reliable in-sandbox path to
    composite crisp code-drawn lettering onto generative art for this asset, so
    a clean titleless card is the correct fallback after two glyph failures.
+
 4. **Normalize to exactly 1200×630 JPEG** with the baked-in ffmpeg (cover-crop —
    from 16:9 this shaves ~3% top/bottom; from 2:1 ~2.4% per side and
    nothing vertical). **JPEG, not PNG**: the card is
@@ -85,6 +87,7 @@ contract only (size, lockup, wiring).
    from the file if the flag is missing, but brand-check still requires the
    field. The injector emits the absolute `https://${host}/og.jpg` URL. Do not
    add `og:image` to `__root.tsx`.
+
 6. **Verify before finishing** (Pillow is installed; `ffprobe` is **not**):
 
    ```sh
@@ -103,5 +106,5 @@ contract only (size, lockup, wiring).
    **rejected** — do not ship it, whatever else is right about it. Fix the
    ratio (step 1) or regenerate with the width bound restated; a shipped
    decapitated title is worse than the placeholder. Then confirm the card
-   reads like *this* app at thumbnail size — clear subject, correctly
+   reads like _this_ app at thumbnail size — clear subject, correctly
    spelled title (if any), comfortable margins.

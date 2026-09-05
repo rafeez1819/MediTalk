@@ -56,7 +56,13 @@ export function listenOnce(lang: Lang): Promise<string> {
       resolve(text.trim());
     };
     rec.onerror = (ev) => {
-      reject(new Error(ev.error === "not-allowed" ? "Microphone permission was denied." : "Could not hear that. Try again."));
+      reject(
+        new Error(
+          ev.error === "not-allowed"
+            ? "Microphone permission was denied."
+            : "Could not hear that. Try again.",
+        ),
+      );
     };
     rec.onend = () => {};
     try {

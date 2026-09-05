@@ -24,13 +24,13 @@ If matching a project sprite: use `imagine_image_to_image` with the existing fra
 
 Write **one short present-tense shot** (1–2 sentences). Constraints:
 
-| Do | Don't |
-| --- | --- |
-| Run/walk **in place** (treadmill) | Travel across the screen |
-| Locked camera | Pan, zoom, orbit, handheld |
-| Keep solid magenta background | Scenic BG, ground scroll, particles filling frame |
-| Single continuous action | Combo attacks + movement + camera |
-| Stable identity/clothes | Costume change mid-clip |
+| Do                                | Don't                                             |
+| --------------------------------- | ------------------------------------------------- |
+| Run/walk **in place** (treadmill) | Travel across the screen                          |
+| Locked camera                     | Pan, zoom, orbit, handheld                        |
+| Keep solid magenta background     | Scenic BG, ground scroll, particles filling frame |
+| Single continuous action          | Combo attacks + movement + camera                 |
+| Stable identity/clothes           | Costume change mid-clip                           |
 
 Run example:
 

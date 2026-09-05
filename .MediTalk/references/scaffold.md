@@ -75,6 +75,9 @@ function Home() {
 @import "tailwindcss";
 
 @layer base {
-  button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 ```

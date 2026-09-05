@@ -56,10 +56,10 @@ right   = ( cos(yaw), 0, -sin(yaw))   // = normalize(cross(forward, worldUp))
 
 With a chase cam **behind** the craft (camera near `position - forward * dist`):
 
-| Player sees | World (this basis) | Input |
-|-------------|--------------------|--------|
+| Player sees | World (this basis) | Input                                                                |
+| ----------- | ------------------ | -------------------------------------------------------------------- |
 | Nose left   | **+yaw**           | **A / ←** must produce **+yaw** (or equivalent bank-left for planes) |
-| Nose right  | **−yaw**           | **D / →** must produce **−yaw** |
+| Nose right  | **−yaw**           | **D / →** must produce **−yaw**                                      |
 
 If your basis differs, keep **one** consistent pair — but the **player-visible**
 row above is mandatory.
@@ -84,8 +84,8 @@ Arcade body with `heading`/`yaw` and forward `speed`:
 ```js
 // Input (held keys → actions once per frame)
 let steer = 0; // -1..+1, player-visible
-if (keys.has('KeyA') || keys.has('ArrowLeft'))  steer += 1;  // LEFT
-if (keys.has('KeyD') || keys.has('ArrowRight')) steer -= 1;  // RIGHT
+if (keys.has("KeyA") || keys.has("ArrowLeft")) steer += 1; // LEFT
+if (keys.has("KeyD") || keys.has("ArrowRight")) steer -= 1; // RIGHT
 // Optional: steer = clamp(steer + gamepadX, -1, 1) with same sign convention
 
 // Integrate (speedFactor ~ 0..1 from |speed|)
@@ -93,7 +93,8 @@ const reverse = speed >= 0 ? 1 : -1; // wheel-left still feels left in reverse
 yaw += steer * turnRate * speedFactor * reverse * dt;
 
 // Move along heading
-const fx = -Math.sin(yaw), fz = -Math.cos(yaw);
+const fx = -Math.sin(yaw),
+  fz = -Math.cos(yaw);
 position.x += fx * speed * dt;
 position.z += fz * speed * dt;
 ```
@@ -104,7 +105,7 @@ position.z += fz * speed * dt;
 // WRONG — this is what ships inverted A/D in the wild
 if (KeyA) steer -= 1;
 if (KeyD) steer += 1;
-yaw += steer * turnRate * dt;  // A → −yaw → nose RIGHT on chase cam
+yaw += steer * turnRate * dt; // A → −yaw → nose RIGHT on chase cam
 ```
 
 If you already wrote `KeyA → steer--`, either **swap the key mapping** or
@@ -113,13 +114,13 @@ twice (keys + integrate + bank mesh).
 
 ### 2c. Fixed-wing flight (airplane, glider, RC plane)
 
-| Input | Action | Player expectation |
-|-------|--------|--------------------|
-| **A / ←** | **Roll left** (aileron) | Left wing down / bank left |
-| **D / →** | **Roll right** | Right wing down / bank right |
-| **W / ↑** | Pitch (pick one scheme and label HUD) | Usually nose down *or* pull-up — be consistent |
-| **S / ↓** | Opposite pitch | |
-| **Q / E** | Yaw / rudder (optional) | Q left, E right |
+| Input     | Action                                | Player expectation                             |
+| --------- | ------------------------------------- | ---------------------------------------------- |
+| **A / ←** | **Roll left** (aileron)               | Left wing down / bank left                     |
+| **D / →** | **Roll right**                        | Right wing down / bank right                   |
+| **W / ↑** | Pitch (pick one scheme and label HUD) | Usually nose down _or_ pull-up — be consistent |
+| **S / ↓** | Opposite pitch                        |                                                |
+| **Q / E** | Yaw / rudder (optional)               | Q left, E right                                |
 
 - **A/D are not strafe** and not “ground steer with FPS signs.”
 - Apply roll in the craft’s **local forward axis** with a sign that matches
@@ -172,12 +173,12 @@ Screenshot-only is **not** enough for any craft with A/D.
 
 While **moving forward** (speed > small epsilon), chase cam behind:
 
-| Hold | Must observe within ~0.5s |
-|------|---------------------------|
-| **A** | Nose or bank moves **left** on screen |
-| **D** | Nose or bank moves **right** on screen |
-| **W** (ground) | Speed increases / moves along facing |
-| **S** (ground) | Brakes or reverse (as designed) |
+| Hold           | Must observe within ~0.5s              |
+| -------------- | -------------------------------------- |
+| **A**          | Nose or bank moves **left** on screen  |
+| **D**          | Nose or bank moves **right** on screen |
+| **W** (ground) | Speed increases / moves along facing   |
+| **S** (ground) | Brakes or reverse (as designed)        |
 
 If A fails: flip steer/roll sign **once**, retest both A and D.
 

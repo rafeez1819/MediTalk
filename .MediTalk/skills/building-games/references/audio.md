@@ -14,11 +14,11 @@ Browsers block audio until the user interacts with the page. An `AudioContext` c
 let audioCtx;
 function unlockAudio() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume(); // call synchronously in the gesture
+  if (audioCtx.state === "suspended") audioCtx.resume(); // call synchronously in the gesture
 }
 // Attach once; remove after first success. `pointerdown`/`touchend`/`keydown` all count.
-window.addEventListener('pointerdown', unlockAudio, { once: true });
-window.addEventListener('keydown', unlockAudio, { once: true });
+window.addEventListener("pointerdown", unlockAudio, { once: true });
+window.addEventListener("keydown", unlockAudio, { once: true });
 ```
 
 - Show a "tap to start" / "click to play" screen so the first gesture reliably unlocks audio (and any pointer lock / fullscreen you need). Games should not expect audio before the player clicks in.
@@ -49,8 +49,10 @@ music  → musicGain ────────────────┼→ mast
 ```js
 const master = audioCtx.createGain();
 const musicBus = audioCtx.createGain();
-const sfxBus   = audioCtx.createGain();
-musicBus.connect(master); sfxBus.connect(master); master.connect(audioCtx.destination);
+const sfxBus = audioCtx.createGain();
+musicBus.connect(master);
+sfxBus.connect(master);
+master.connect(audioCtx.destination);
 ```
 
 - Set volumes with **`gain.setTargetAtTime(value, audioCtx.currentTime, 0.02)`** or `setValueAtTime`, **not** a raw `gain.value =` mid-play — abrupt jumps cause clicks/pops. Ramp fades over ~10–50ms.
@@ -89,6 +91,7 @@ musicBus.connect(master); sfxBus.connect(master); master.connect(audioCtx.destin
 ---
 
 ## 7. Formats & assets
+
 - Use **compressed formats**: `.webm`/`.ogg` (Opus/Vorbis) with an `.mp3`/`.m4a` fallback for Safari. Howler takes an array of sources and picks a supported one.
 - Keep SFX short and mono (mono halves size and works with panners); keep music stereo but compressed.
 - Watch total download; long music tracks can stream via `html5: true` in Howler (uses `<audio>`, saves memory, slightly higher latency — fine for music).
@@ -96,6 +99,7 @@ musicBus.connect(master); sfxBus.connect(master); master.connect(audioCtx.destin
 ---
 
 ## 8. Bug-prevention checklist
+
 - **No sound on mobile/iOS** → didn't resume `AudioContext` synchronously inside a user gesture; add a tap-to-start unlock.
 - **Silence after backgrounding tab** → context re-suspended; resume on `visibilitychange`/focus.
 - **Clicks/pops on volume change or start/stop** → setting `gain.value` abruptly; ramp with `setTargetAtTime` and fade in/out a few ms.
@@ -109,6 +113,7 @@ musicBus.connect(master); sfxBus.connect(master); master.connect(audioCtx.destin
 ---
 
 ## Defaults to apply
+
 - **Default to Howler.js** for generated games (handles unlock, sprites, fades, spatial, pooling) — fall back to raw Web Audio only when we need custom DSP/scheduling.
 - **Always wire the mixer graph**: master + music + sfx gain buses with sliders and a mute, from the first commit. Map sliders through a `x²` curve.
 - **Always add a "tap to start" gate** that unlocks audio (and pointer lock/fullscreen) on the first gesture, and re-resume on visibility change — kills the #1 "no audio on mobile" bug.
@@ -117,6 +122,7 @@ musicBus.connect(master); sfxBus.connect(master); master.connect(audioCtx.destin
 ---
 
 ## Sources
+
 - MDN — Web Audio API Best Practices (autoplay, gesture, gain, controls): https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices
 - MDN — `AudioContext.resume()`: https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/resume
 - MDN — `BaseAudioContext.decodeAudioData()`: https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData

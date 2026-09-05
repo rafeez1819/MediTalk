@@ -37,16 +37,16 @@ sign-out (or any sign-out route/handler) for gate viewers.
 
 ## Files (pre-wired — do not edit)
 
-| File | Role |
-|---|---|
-| `gate-identity.server.ts` | Verifies the gate's `x-grok-identity` viewer JWT (EdDSA vs the gate JWKS; fail-closed). Server-only. |
-| `gate-session.server.ts` | Better Auth plugin that turns a verified gate identity into the app session with zero clicks. Already registered in `server.ts`. |
+| File                      | Role                                                                                                                             |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `gate-identity.server.ts` | Verifies the gate's `x-grok-identity` viewer JWT (EdDSA vs the gate JWKS; fail-closed). Server-only.                             |
+| `gate-session.server.ts`  | Better Auth plugin that turns a verified gate identity into the app session with zero clicks. Already registered in `server.ts`. |
 
 ## Env (deployer-injected)
 
-| Var | Scope | Meaning |
-|---|---|---|
-| `GROK_PROJECT_ID` | server | deployed apps: enables "Sign in with Grok" (`x-grok-identity` audience check `app:<project_id>`) |
+| Var                | Scope  | Meaning                                                                                                                                                                                                               |
+| ------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GROK_PROJECT_ID`  | server | deployed apps: enables "Sign in with Grok" (`x-grok-identity` audience check `app:<project_id>`)                                                                                                                      |
 | `GROK_GATE_ORIGIN` | server | gate public origin override (JWKS + issuer pin); unset → preview mode (no `GROK_PROJECT_ID`) defaults to the in-VM proxy `http://127.0.0.1:6014` (audience `preview`), deployed mode derives it from the inbound host |
 
 Deployed behavior: gate-authenticated viewers are signed in automatically from

@@ -16,7 +16,11 @@ export const listTodos = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const sql = await getSql();
     // Type the row shape — a server fn's return must be provably serializable.
-    return sql<{ id: number; title: string; done: boolean }>`select id, title, done from todos where user_id = ${context.userId} order by id desc`;
+    return sql<{
+      id: number;
+      title: string;
+      done: boolean;
+    }>`select id, title, done from todos where user_id = ${context.userId} order by id desc`;
   });
 
 // Inputs go through `.validator()` (the current API); the client passes `{ data }`:
@@ -35,7 +39,11 @@ Call these from **client code** (effects, event handlers, React Query) — that'
 where `Sec-Fetch-Site: same-origin` holds:
 
 ```ts
-useEffect(() => { listTodos().then(setTodos).catch(() => setTodos([])); }, []);
+useEffect(() => {
+  listTodos()
+    .then(setTodos)
+    .catch(() => setTodos([]));
+}, []);
 ```
 
 Semantics: signed out → the middleware throws `UnauthorizedError` (message

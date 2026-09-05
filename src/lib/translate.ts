@@ -3,15 +3,17 @@ import { getLang, isLang, langName, type Lang } from "./languages";
 import { matchPhrase } from "./phrases";
 import { TERMS } from "./terms";
 
-export type TranslateResult = {
-  ok: true;
-  translation: string;
-  plain: string;
-  source: "phrasebook" | "glossary" | "ai";
-} | {
-  ok: false;
-  error: string;
-};
+export type TranslateResult =
+  | {
+      ok: true;
+      translation: string;
+      plain: string;
+      source: "phrasebook" | "glossary" | "ai";
+    }
+  | {
+      ok: false;
+      error: string;
+    };
 
 type Input = {
   text: string;
@@ -36,9 +38,7 @@ function localTranslate(input: Input): TranslateResult | null {
     };
   }
   const q = text.toLowerCase();
-  const term = TERMS.find((t) =>
-    Object.values(t.term).some((v) => v.toLowerCase() === q),
-  );
+  const term = TERMS.find((t) => Object.values(t.term).some((v) => v.toLowerCase() === q));
   if (term) {
     return {
       ok: true,

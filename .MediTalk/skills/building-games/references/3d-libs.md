@@ -9,6 +9,7 @@ route. It deploys like any other page.
 > (+ `npm i -D @types/three`). If the deploy build has no three, the game is blank.
 
 ## When to use what
+
 - **three.js** — the engine. Raw three is fine for a self-contained canvas; prefer
   R3F when the game has React UI/state around it.
 - **@react-three/fiber** — renders three as React; `useFrame((state, delta) => …)`
@@ -21,13 +22,14 @@ route. It deploys like any other page.
   instead of hand-rolled raycasts. `<Physics>`, `<RigidBody>`, `useRapier`.
 
 ## Minimal R3F shape
+
 ```tsx
 import { Canvas, useFrame } from "@react-three/fiber";
 import { PointerLockControls, useKeyboardControls } from "@react-three/drei";
 
 function Player() {
   useFrame((_, delta) => {
-    const d = Math.min(delta, 0.1);       // cap delta (SKILL §1)
+    const d = Math.min(delta, 0.1); // cap delta (SKILL §1)
     // move with a dedicated moveForward/moveRight basis (SKILL §2/§4)
   });
   return null;
@@ -37,7 +39,7 @@ export default function Game() {
   return (
     <Canvas camera={{ position: [0, 1.7, 5], fov: 75 }} shadows dpr={[1, 2]}>
       {/* scene */}
-      <PointerLockControls />   {/* mouse-look ONLY — implement WASD yourself */}
+      <PointerLockControls /> {/* mouse-look ONLY — implement WASD yourself */}
       <Player />
     </Canvas>
   );
@@ -45,6 +47,7 @@ export default function Game() {
 ```
 
 ## Gotchas (map to the SKILL universals)
+
 - **Controls:** drei `PointerLockControls` is mouse-look only — WASD is yours
   (SKILL §2). Gate `.lock()` behind a "click to play" overlay and dismiss it on lock.
 - **Orientation:** meshes face +Z, camera looks −Z; right-handed +Y up (SKILL §3).
@@ -56,6 +59,7 @@ export default function Game() {
 - **Mobile:** R3F sets pixel ratio via `dpr`; still add touch controls + `touch-action:none`.
 
 ## Alternatives
+
 - **Babylon.js** (`references/babylon.md`) — batteries-included 3D (Havok physics,
   inspector, SceneOptimizer). Viable if you want an all-in-one engine, but it's a
   separate paradigm from React; default to three/R3F for consistency with the app.

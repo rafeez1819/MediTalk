@@ -4,12 +4,14 @@ For playable side-view scrolling/action maps, an in-world stage reference mockup
 
 0. Choose and record one `stage_canvas`, for example `1536x864` for a default 16:9 HD side-scroller when the project has no explicit camera size. Use the engine's existing viewport aspect ratio when it exists. All primary parallax layers, the stage reference, and the stage preview must share this exact size unless a layer is explicitly marked as a repeatable strip.
 1. Generate named parallax scenery layers as separate runtime images: `assets/map/<name>-sky.png`, `assets/map/<name>-far-bg.png`, `assets/map/<name>-mid-bg.png`, `assets/map/<name>-near-bg.png`, and optional `assets/map/<name>-foreground-overlay.png`.
+
 - These layers are scenery only, not playable foreground. They may contain sky, clouds, mountains, distant buildings, distant castle walls, silhouettes, atmosphere, and non-colliding far depth.
 - Do not collapse these layers into only `assets/map/<name>-background.png` for a playable `side_scroll_mode` stage. A single scenery background is allowed only when the user explicitly requests a flat/non-parallax background; in that case still continue with stage reference, separate objects, collision, camera bounds, and QA preview.
-   - Each primary layer prompt must specify the same target canvas size/aspect ratio, same camera framing, same horizon height, and same top-left aligned composition. If image generation returns different sizes, regenerate or normalize them to `stage_canvas` before using them together.
-   - Repeatable strips and foreground/object sprites may have different source dimensions, but they must declare display size, anchor point, repeat axis, and scale in metadata. They are not substitutes for the primary parallax plates.
-   - It must not contain walkable floors, platform tops, terrain chunks, spike traps, pickups, crates, doors, gates, checkpoints, ladders, near fences, near stone walls, enemies, player characters, UI, labels, or any object that should later be edited, collided with, reused, or layered independently.
-   - Keep the playable foreground lane visually open or neutral so separate platform/object layers can stack clearly over it.
+  - Each primary layer prompt must specify the same target canvas size/aspect ratio, same camera framing, same horizon height, and same top-left aligned composition. If image generation returns different sizes, regenerate or normalize them to `stage_canvas` before using them together.
+  - Repeatable strips and foreground/object sprites may have different source dimensions, but they must declare display size, anchor point, repeat axis, and scale in metadata. They are not substitutes for the primary parallax plates.
+  - It must not contain walkable floors, platform tops, terrain chunks, spike traps, pickups, crates, doors, gates, checkpoints, ladders, near fences, near stone walls, enemies, player characters, UI, labels, or any object that should later be edited, collided with, reused, or layered independently.
+  - Keep the playable foreground lane visually open or neutral so separate platform/object layers can stack clearly over it.
+
 2. Hand the background to `imagine_image_to_image` as a real reference: pass its sandbox `file_path`. Also `read_file` it so you can see it; do not rely on a path string or prompt text as the reference.
 3. In the stage-reference prompt, explicitly say: use the provided background image as the visual reference, preserve exact camera/framing/dimensions/horizon/depth/entrances/exit direction, and generate an in-world stage reference mockup.
 4. Generate `assets/map/<name>-stage-reference.png` from the visible background.

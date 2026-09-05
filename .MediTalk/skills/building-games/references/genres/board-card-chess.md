@@ -1,6 +1,6 @@
 # Genre Playbook — Board & Card Games (Chess, Checkers, Tic-Tac-Toe, Card games)
 
-Turn-based logic games where correctness *is* the game: an illegal move or a flaky turn transition breaks trust instantly. The genre is about a clean **turn state machine**, **rigorous legal-move validation**, and (for solo play) a **minimax / alpha-beta AI**. Almost always 2D (Canvas/DOM/Phaser); rendering is trivial, logic is everything. Read `../threejs-foundational.md` for general structure; this file is about game-logic correctness.
+Turn-based logic games where correctness _is_ the game: an illegal move or a flaky turn transition breaks trust instantly. The genre is about a clean **turn state machine**, **rigorous legal-move validation**, and (for solo play) a **minimax / alpha-beta AI**. Almost always 2D (Canvas/DOM/Phaser); rendering is trivial, logic is everything. Read `../threejs-foundational.md` for general structure; this file is about game-logic correctness.
 
 ---
 
@@ -31,7 +31,7 @@ Model the game as an explicit finite state machine — never as ad-hoc booleans 
 ## 3. Legal-move validation (get this exactly right)
 
 - **Generate, then filter.** Produce candidate moves per piece, then remove illegal ones. **Only offer/accept legal moves** — highlight them; reject clicks on illegal squares.
-- **Chess "leaves your king in check" rule (the classic omission):** a move is illegal if, *after* making it, your own king is attacked. Implement by making the move on a copy, checking if your king is attacked, and rejecting if so. This automatically handles pins — don't try to special-case pins.
+- **Chess "leaves your king in check" rule (the classic omission):** a move is illegal if, _after_ making it, your own king is attacked. Implement by making the move on a copy, checking if your king is attacked, and rejecting if so. This automatically handles pins — don't try to special-case pins.
 - **Special chess rules to not forget:** castling (king & rook unmoved, squares empty, king not in/through/into check), en passant (only immediately after the enemy pawn's two-square move), pawn promotion, and the 50-move / threefold-repetition / stalemate draws. These are exactly why `chess.js` exists.
 - **Terminal detection:** checkmate = in check AND no legal moves; stalemate = not in check AND no legal moves (a draw, not a loss — a very common bug is scoring stalemate as a win). For tic-tac-toe/connect-4, check all lines after each move and also detect a full-board draw.
 - **Card games:** validate legality against the rules (can you play this card now?), keep hidden information hidden (trivial in single-player; true hidden-info enforcement needs a server, which is out of scope on this deploy target), and shuffle with an unbiased algorithm (**Fisher–Yates**, not `sort(() => Math.random()-0.5)` which is biased).
@@ -78,6 +78,7 @@ For **perfect-information, deterministic** games (chess, checkers, tic-tac-toe, 
 ---
 
 ## Sources
+
 - chess.js — move generation, validation, check/checkmate/draw detection: https://github.com/jhlywa/chess.js
 - chessground — Lichess's board UI: https://github.com/lichess-org/chessground
 - Chess Programming Wiki — Minimax: https://www.chessprogramming.org/Minimax

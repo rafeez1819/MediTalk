@@ -17,17 +17,16 @@ The product is the IDENTITY, not any single image.
 Users state WHAT they need, not how — apply everything here even when
 the request never mentions it.
 
-
 ## 1. Asymmetry bookkeeping (turnarounds)
 
 Before prompting, write the side-map table for every view. Example: "her
 left arm sleeved" →
 
-| view  | sleeved arm appears on | staff hand appears on |
-|-------|------------------------|----------------------|
-| front | viewer's RIGHT         | (as designed)        |
-| right profile | near side = her right = BARE | ...          |
-| back  | viewer's LEFT          | mirrored from front  |
+| view          | sleeved arm appears on       | staff hand appears on |
+| ------------- | ---------------------------- | --------------------- |
+| front         | viewer's RIGHT               | (as designed)         |
+| right profile | near side = her right = BARE | ...                   |
+| back          | viewer's LEFT                | mirrored from front   |
 
 Prompt each view with VIEWER-relative words from this table, never
 body-relative words. Verify each output against the table, not the original

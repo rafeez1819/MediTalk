@@ -1,12 +1,13 @@
 # ECS & Game State Architecture for JS Games (bitECS, miniplex, ECS vs OOP, state structure)
 
-Consolidated from webgamedev.com, the bitECS and miniplex docs, and data-oriented-design canon (see Sources). Focus: how an AI builder should **structure game state so it stays fast and untangled** as a game grows — and when *not* to reach for ECS.
+Consolidated from webgamedev.com, the bitECS and miniplex docs, and data-oriented-design canon (see Sources). Focus: how an AI builder should **structure game state so it stays fast and untangled** as a game grows — and when _not_ to reach for ECS.
 
 ---
 
 ## 1. What ECS is (and why it exists)
 
 **Entity-Component-System** separates data from behavior:
+
 - **Entity** — an ID (or a plain object) with no logic; just a thing that exists.
 - **Component** — pure **data**, no methods (Position, Velocity, Health, Sprite, Collider).
 - **System** — pure **behavior** that iterates all entities having a given set of components and updates them (MovementSystem reads Position+Velocity).
@@ -20,12 +21,14 @@ The classic problem ECS solves: the "deadly diamond" of OOP inheritance (`Flying
 ## 2. When ECS vs OOP (don't cargo-cult ECS)
 
 **Use plain OOP / a simple object list when:**
+
 - Small games, jams, prototypes, or a handful of distinct entity types.
 - Entity count is low (dozens–low hundreds) and perf isn't a concern.
 - The team/model iterates faster with intuitive `player.jump()` classes.
 - The engine already gives you a good model (Phaser GameObjects/prefabs, Three.js `Object3D` scene graph) — you can go a long way with a component-ish mixin approach without a full ECS.
 
 **Reach for ECS when:**
+
 - **Many similar entities** (bullet-hell, RTS, particles, simulations, .io games) — thousands of entities needing fast batch updates.
 - Highly **combinatorial** entity capabilities (lots of mix-and-match behaviors/status effects).
 - You need **determinism/serialization** (netcode, replays, save states) — pure-data components serialize trivially.
@@ -37,27 +40,48 @@ The classic problem ECS solves: the "deadly diamond" of OOP inheritance (`Flying
 ## 3. Library choice: bitECS vs miniplex
 
 **miniplex** — DX-first, entities are **plain JS objects**, components are just properties. Best default for most indie/web games and rapid prototyping; excellent TypeScript + React bindings.
+
 ```js
-import { World } from 'miniplex';
+import { World } from "miniplex";
 const world = new World();
-const player = world.add({ position:{x:0,y:0}, velocity:{x:100,y:0}, health:{cur:100,max:100} });
-const moving = world.with('position','velocity');   // live archetype query
-function movementSystem(dt){ for (const e of moving){ e.position.x += e.velocity.x*dt; e.position.y += e.velocity.y*dt; } }
+const player = world.add({
+  position: { x: 0, y: 0 },
+  velocity: { x: 100, y: 0 },
+  health: { cur: 100, max: 100 },
+});
+const moving = world.with("position", "velocity"); // live archetype query
+function movementSystem(dt) {
+  for (const e of moving) {
+    e.position.x += e.velocity.x * dt;
+    e.position.y += e.velocity.y * dt;
+  }
+}
 world.remove(player);
 ```
+
 - Use `world.addComponent(e,'velocity',{...})` / `removeComponent` so queries re-index (mutating a bare property can skip re-indexing).
 - `for...of` over a query is fast and **safe for removal during iteration**. No built-in scheduler — you call systems from your loop.
 - Object property access is slightly slower at extreme entity counts than bitECS's typed arrays.
 
 **bitECS** — performance-first, data-oriented: entities are **integer IDs**, components are **Structure-of-Arrays (typed arrays)**, archetype/bitmask queries. Best for tens of thousands of entities, WebGPU, perf-critical sims. ~5kb, zero deps (used in Hubs/Third Room; eyed by Phaser 4).
+
 ```js
-import { createWorld, addEntity, addComponent, query } from 'bitecs';
-const world = createWorld({ Position:{x:new Float32Array(1e4),y:new Float32Array(1e4)}, Velocity:{x:[],y:[]} });
+import { createWorld, addEntity, addComponent, query } from "bitecs";
+const world = createWorld({
+  Position: { x: new Float32Array(1e4), y: new Float32Array(1e4) },
+  Velocity: { x: [], y: [] },
+});
 const { Position, Velocity } = world.components;
-const eid = addEntity(world); addComponent(world,eid,Position); addComponent(world,eid,Velocity);
-const moving = query(world,[Position,Velocity]);
-for (const e of moving){ Position.x[e] += Velocity.x[e]*dt; Position.y[e] += Velocity.y[e]*dt; }
+const eid = addEntity(world);
+addComponent(world, eid, Position);
+addComponent(world, eid, Velocity);
+const moving = query(world, [Position, Velocity]);
+for (const e of moving) {
+  Position.x[e] += Velocity.x[e] * dt;
+  Position.y[e] += Velocity.y[e] * dt;
+}
 ```
+
 - **Note the API moved on:** older tutorials use `defineComponent`/`defineQuery`/`Types`; current bitECS (0.4+) uses `createWorld({...schemas})` + `query(world,[...])`, plus relationships/observers/prefabs. Verify the version you install.
 - SoA layout = cache-friendly; entities-as-IDs = trivial to serialize/network.
 
@@ -78,6 +102,7 @@ for (const e of moving){ Position.x[e] += Velocity.x[e]*dt; Position.y[e] += Vel
 ---
 
 ## 5. Bug-prevention checklist
+
 - **Putting logic in components / data in systems** → defeats ECS; keep components pure data, systems pure behavior.
 - **Adopting ECS for a tiny game** → boilerplate with no benefit; use a simple object list/classes until entity count/complexity warrants it.
 - **Deep inheritance for entity variety** → combinatorial class explosion; compose with components instead.
@@ -92,6 +117,7 @@ for (const e of moving){ Position.x[e] += Velocity.x[e]*dt; Position.y[e] += Vel
 ---
 
 ## Defaults to apply
+
 - **Default to miniplex** for generated games that need ECS (plain objects, great TS/React DX); **switch to bitECS** only when the game genuinely has thousands of entities or needs SoA perf. For small/simple games, a plain object list or engine prefabs is fine — don't force ECS.
 - **Always structure state as a single serializable world with sim/render separation** and an **explicit system pipeline** (input→AI→movement→collision→damage→cleanup→render-sync) run on a fixed timestep. This unlocks save/load, replays, and netcode for free.
 - **Bake in pooling + deferred spawn/despawn** for entity-heavy genres.
@@ -100,6 +126,7 @@ for (const e of moving){ Position.x[e] += Velocity.x[e]*dt; Position.y[e] += Vel
 ---
 
 ## Sources
+
 - Web Game Dev — Code architecture / ECS overview: https://www.webgamedev.com/code-architecture/ecs
 - bitECS — repo & docs: https://github.com/NateTheGreatt/bitECS , https://bitecs.dev/docs/introduction
 - miniplex — repo & docs: https://github.com/hmans/miniplex , miniplex-react: https://github.com/hmans/miniplex/tree/main/packages/miniplex-react

@@ -20,7 +20,8 @@
   --radius-md: 12px;
   --radius-lg: 18px;
   --radius-xl: 26px;
-  --shadow-border: 0 0 0 1px rgba(27, 34, 31, 0.06), 0 1px 2px -1px rgba(27, 34, 31, 0.06),
+  --shadow-border:
+    0 0 0 1px rgba(27, 34, 31, 0.06), 0 1px 2px -1px rgba(27, 34, 31, 0.06),
     0 2px 8px 0 rgba(27, 34, 31, 0.04);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --motion-quick: 150ms;

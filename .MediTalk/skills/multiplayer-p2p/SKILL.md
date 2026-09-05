@@ -22,12 +22,12 @@ use from the kit is client-side only; the relay is yours.
 
 Latency is browser↔browser (often 5–40ms) with zero per-tick server cost.
 
-| Piece | Path |
-|---|---|
-| Mesh primitive (start here) | `P2PRoom` from `@/lib/multiplayer` |
-| React room binding (optional, you create) | `src/lib/multiplayer/use-p2p-room.ts` |
-| Signaling relay (you create) | `src/lib/multiplayer/signaling.server.ts` |
-| HTTP mount (you create) | `src/routes/api/rtc.ts` |
+| Piece                                     | Path                                      |
+| ----------------------------------------- | ----------------------------------------- |
+| Mesh primitive (start here)               | `P2PRoom` from `@/lib/multiplayer`        |
+| React room binding (optional, you create) | `src/lib/multiplayer/use-p2p-room.ts`     |
+| Signaling relay (you create)              | `src/lib/multiplayer/signaling.server.ts` |
+| HTTP mount (you create)                   | `src/routes/api/rtc.ts`                   |
 
 **Trust model — read before choosing P2P.** There is no server authority:
 every peer runs its own copy of the rules and can lie (position, score,

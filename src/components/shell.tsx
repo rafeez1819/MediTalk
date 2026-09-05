@@ -35,17 +35,12 @@ export function AppShell({
               MediTalk
             </span>
           </Link>
-          {title ? (
-            <p className="hidden truncate text-sm text-muted sm:block">{title}</p>
-          ) : null}
+          {title ? <p className="hidden truncate text-sm text-muted sm:block">{title}</p> : null}
           <div className="flex items-center gap-2">{action}</div>
         </div>
       </header>
       <main
-        className={cn(
-          "mx-auto w-full flex-1 px-4 pb-28 pt-5",
-          wide ? "max-w-5xl" : "max-w-3xl",
-        )}
+        className={cn("mx-auto w-full flex-1 px-4 pb-28 pt-5", wide ? "max-w-5xl" : "max-w-3xl")}
       >
         {children}
       </main>

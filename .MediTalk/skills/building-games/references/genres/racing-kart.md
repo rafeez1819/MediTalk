@@ -41,7 +41,7 @@ Model the car as a point/box with a **heading (yaw)**, a **forward speed**, and 
 
 - **Drift = temporarily reduce lateral grip** (let more sideways velocity survive) while the player holds a drift/handbrake button and steers, so the car slides through the corner with the nose pointing inward.
 - **Hop-then-drift (kart style):** a small hop initiates the drift; holding it while turning builds a **drift charge** over time.
-- **Mini-turbo / boost payoff:** the longer/tighter the drift, the bigger the speed boost on release (stage it: blue → orange sparks). This risk/reward loop *is* kart racing.
+- **Mini-turbo / boost payoff:** the longer/tighter the drift, the bigger the speed boost on release (stage it: blue → orange sparks). This risk/reward loop _is_ kart racing.
 - **Visual/audio feedback:** tire-skid marks (decals), drift particles/sparks that change color with charge, tire-screech sound, and a slight camera FOV kick on boost. Feedback sells the drift.
 - **Countersteer feel:** while drifting, let the player modulate the slide angle with steering; snap back to grip smoothly on release (don't instantly zero the lateral velocity — lerp it).
 
@@ -51,7 +51,7 @@ Model the car as a point/box with a **heading (yaw)**, a **forward speed**, and 
 
 - **Place ordered checkpoints around the track** (invisible trigger volumes/gates), including a start/finish line. Store the count `N`.
 - **Require sequential passing:** track `nextCheckpoint`. A checkpoint only counts if it's the expected next one; passing them out of order (or driving backward) does nothing. This **prevents lap-skipping / reverse-cheesing** — the classic bug where crossing the finish line repeatedly racks up laps.
-- **Count a lap** only when the player crosses the finish line *after* hitting all checkpoints for that lap; then reset `nextCheckpoint` to 0.
+- **Count a lap** only when the player crosses the finish line _after_ hitting all checkpoints for that lap; then reset `nextCheckpoint` to 0.
 - **Detect crossing with trigger overlap** (AABB/sphere against the car), and for fast cars use a **swept/segment test** (did the car's path this frame cross the gate plane?) so you don't tunnel through a thin checkpoint at high speed.
 - **Respawn / rescue:** if the car flips, leaves the track, or stalls, respawn it at the **last passed checkpoint** facing forward. Also use checkpoints for "wrong way" detection.
 - **HUD:** current lap / total, current + best lap time, position. Freeze the timer at finish.
@@ -98,6 +98,7 @@ Model the car as a point/box with a **heading (yaw)**, a **forward speed**, and 
 ---
 
 ## Sources
+
 - "How to make an arcade car / kart handling model" (community write-ups, e.g. Kenney/CodinGame arcade car): https://github.com/spacejack/carphysics2d and demo https://spacejack.github.io/carphysics2d/
 - Marco Monster — "Car Physics for Games" (classic arcade/sim reference): https://asawicki.info/Mirror/Car%20Physics%20for%20Games/Car%20Physics%20for%20Games.html
 - Three.js — chase/follow camera & `Object3D.lookAt`: https://threejs.org/docs/#api/en/core/Object3D.lookAt

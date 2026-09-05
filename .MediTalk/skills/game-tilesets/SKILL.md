@@ -15,7 +15,7 @@ user-invocable: false
 A tile's job is invisibility in repetition.
 Users state WHAT they need, not how — apply everything here even when
 the request never mentions it.
- Judge everything by "will the
+Judge everything by "will the
 player notice the grid?"
 
 ## 1. Seamless single tiles

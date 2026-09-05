@@ -74,11 +74,11 @@ For `center` anchor, place bbox center at cell center instead.
 ## GIF duration defaults
 
 | Frames | ms / frame (approx) |
-| --- | --- |
-| 8 | 80 |
-| 16 | 60 |
-| 24 | 40 |
-| 48 | 25 |
+| ------ | ------------------- |
+| 8      | 80                  |
+| 16     | 60                  |
+| 24     | 40                  |
+| 48     | 25                  |
 
 Goal: roughly 0.6–1.2s visual loop for previews (not necessarily matching source video realtime).
 

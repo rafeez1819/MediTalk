@@ -2,7 +2,7 @@
 
 Phaser is the default choice for **2D browser games**. This file goes deep on the parts that actually break in generated games. It assumes the general loop/mobile/perf rules in `threejs-foundational.md` and does **not** repeat them.
 
-> **Version note (verified):** Phaser **3** is the mature, ubiquitous line (3.90+). Phaser **4** shipped in 2025 with a rewritten WebGL renderer (internally "Beam") and optional **WebGPU** path, plus the core split into modular packages. Phaser 4 is *intentionally near-API-compatible with Phaser 3* — the Scene lifecycle, Arcade/Matter physics, Scale Manager, Loader and GameObject APIs described here carry over. Prefer Phaser 3 (3.90.x) for maximum stability/plugin compatibility today; use Phaser 4 when you want the faster renderer/WebGPU and can tolerate a younger ecosystem. When unsure, target v3 API surface — it runs on both.
+> **Version note (verified):** Phaser **3** is the mature, ubiquitous line (3.90+). Phaser **4** shipped in 2025 with a rewritten WebGL renderer (internally "Beam") and optional **WebGPU** path, plus the core split into modular packages. Phaser 4 is _intentionally near-API-compatible with Phaser 3_ — the Scene lifecycle, Arcade/Matter physics, Scale Manager, Loader and GameObject APIs described here carry over. Prefer Phaser 3 (3.90.x) for maximum stability/plugin compatibility today; use Phaser 4 when you want the faster renderer/WebGPU and can tolerate a younger ecosystem. When unsure, target v3 API surface — it runs on both.
 
 ---
 
@@ -14,11 +14,13 @@ A Phaser game is a **stack of Scenes**, each an almost self-contained world (own
 
 ```js
 class GameScene extends Phaser.Scene {
-  constructor() { super('game'); }          // unique string key
-  init(data) {}      // (1) reset per-run state HERE, receives data from start/launch
-  preload() {}       // (2) queue asset loads only
-  create(data) {}    // (3) build objects; assets from preload are now ready
-  update(time, delta){} // (4) every tick while RUNNING (delta in ms)
+  constructor() {
+    super("game");
+  } // unique string key
+  init(data) {} // (1) reset per-run state HERE, receives data from start/launch
+  preload() {} // (2) queue asset loads only
+  create(data) {} // (3) build objects; assets from preload are now ready
+  update(time, delta) {} // (4) every tick while RUNNING (delta in ms)
 }
 ```
 
@@ -37,15 +39,15 @@ Run **multiple scenes at once**, layered bottom→top by config order:
 
 ### Scene control verbs (get these exactly right — a top bug source)
 
-| Method | Effect on target | Effect on caller |
-|---|---|---|
-| `start('k')` | **stops** then starts k | **stops** caller |
-| `launch('k')` | starts k (parallel) | caller keeps running |
-| `switch('k')` | starts or **wakes** k | **sleeps** caller |
-| `run('k')` | resume if paused / wake if sleeping / restart if running / else start | caller keeps running |
-| `pause`/`resume` | freeze update, keep render | — |
-| `sleep`/`wake` | freeze update + render | — |
-| `stop` | shutdown | — |
+| Method           | Effect on target                                                      | Effect on caller     |
+| ---------------- | --------------------------------------------------------------------- | -------------------- |
+| `start('k')`     | **stops** then starts k                                               | **stops** caller     |
+| `launch('k')`    | starts k (parallel)                                                   | caller keeps running |
+| `switch('k')`    | starts or **wakes** k                                                 | **sleeps** caller    |
+| `run('k')`       | resume if paused / wake if sleeping / restart if running / else start | caller keeps running |
+| `pause`/`resume` | freeze update, keep render                                            | —                    |
+| `sleep`/`wake`   | freeze update + render                                                | —                    |
+| `stop`           | shutdown                                                              | —                    |
 
 Rules of thumb: gameplay you replay from scratch → **start/stop** or **sleep/wake**; a modal (pause menu, shop) over live gameplay → **pause/resume** or **launch** an overlay; menus you revisit → **sleep/wake** is easier to reason about than start/stop.
 
@@ -55,18 +57,31 @@ Scenes are **booted once, started many times**. Module-level or constructor-set 
 
 ```js
 // BROKEN: gameOver stays true after restart → instant game over
-class S extends Phaser.Scene { constructor(){ super('s'); this.gameOver = false; } }
+class S extends Phaser.Scene {
+  constructor() {
+    super("s");
+    this.gameOver = false;
+  }
+}
 
 // CORRECT: reset run state in init()
 class S extends Phaser.Scene {
-  constructor(){ super('s'); }
-  init(){ this.gameOver = false; this.score = 0; }   // runs on every start
+  constructor() {
+    super("s");
+  }
+  init() {
+    this.gameOver = false;
+    this.score = 0;
+  } // runs on every start
 }
 ```
 
 Related: arrays of destroyed game objects survive restart. **Clean up on SHUTDOWN**:
+
 ```js
-this.events.once('shutdown', () => { this.enemies.length = 0; });
+this.events.once("shutdown", () => {
+  this.enemies.length = 0;
+});
 ```
 
 ### Cleanup rule
@@ -95,7 +110,7 @@ Phaser ships two physics systems. **Pick Arcade unless you specifically need Mat
 ### Matter.js — full rigid-body, for physics-toys/ragdolls/complex shapes
 
 - Real rigid-body dynamics: rotation, arbitrary convex/compound polygons, constraints/joints, springs, restitution, friction, sleeping bodies.
-- Use when the *physics itself is the game* (Angry-Birds-like, stacking, contraptions, vehicles) or you need realistic collisions/rotation.
+- Use when the _physics itself is the game_ (Angry-Birds-like, stacking, contraptions, vehicles) or you need realistic collisions/rotation.
 - Config: `physics: { default: 'matter', matter: { gravity: { y: 1 }, debug: true } }`.
 - `this.matter.add.sprite(x,y,key,null,{ shape:'circle', restitution:0.6 })`. Use collision events: `this.matter.world.on('collisionstart', (e)=>{ for (const p of e.pairs){…} })`, plus **collision filters/categories** for what hits what.
 - Heavier than Arcade; watch body counts on mobile. Enable body sleeping for idle stacks.
@@ -136,8 +151,18 @@ scale: {
 - Uniform grid frames → `this.load.spritesheet('run','run.png',{ frameWidth:32, frameHeight:32 })`.
 - Animations are **global** (stored on the Animation Manager), defined once, reused by any sprite in any scene:
   ```js
-  this.anims.create({ key:'run', frames:this.anims.generateFrameNames('sheet',{prefix:'run_',start:0,end:7,zeroPad:2}), frameRate:12, repeat:-1 });
-  sprite.play('run');
+  this.anims.create({
+    key: "run",
+    frames: this.anims.generateFrameNames("sheet", {
+      prefix: "run_",
+      start: 0,
+      end: 7,
+      zeroPad: 2,
+    }),
+    frameRate: 12,
+    repeat: -1,
+  });
+  sprite.play("run");
   ```
 - Batching: sprites sharing the **same texture** batch into few draw calls. Interleaving textures (sprite from atlas A, then B, then A) breaks the batch. Group same-texture sprites and set depth thoughtfully.
 - Bitmap fonts (`load.bitmapFont`) render far cheaper than lots of dynamic `Text` objects (each `Text` is its own canvas texture — expensive to update every frame). For frequently-changing text prefer bitmap fonts or update sparingly.
@@ -150,16 +175,16 @@ For levels, use **Tiled** (`.tmx`/exported JSON) rather than hand-placing sprite
 
 ```js
 // preload
-this.load.image('tiles','tileset.png');
-this.load.tilemapTiledJSON('map','level1.json');
+this.load.image("tiles", "tileset.png");
+this.load.tilemapTiledJSON("map", "level1.json");
 // create
-const map = this.make.tilemap({ key:'map' });
-const tileset = map.addTilesetImage('tilesetNameInTiled','tiles');
-const ground = map.createLayer('Ground', tileset, 0, 0);
-ground.setCollisionByProperty({ collides:true });        // set per-tile in Tiled
+const map = this.make.tilemap({ key: "map" });
+const tileset = map.addTilesetImage("tilesetNameInTiled", "tiles");
+const ground = map.createLayer("Ground", tileset, 0, 0);
+ground.setCollisionByProperty({ collides: true }); // set per-tile in Tiled
 this.physics.add.collider(player, ground);
 // object layer for spawns/enemies:
-const objs = map.getObjectLayer('Objects').objects;
+const objs = map.getObjectLayer("Objects").objects;
 ```
 
 - **Static layers** (`createLayer`) are fast (culled, batched). Dynamic tile edits use the same layer API (`putTileAt`, `removeTileAt`) — layers are dynamic in current Phaser.
@@ -175,14 +200,16 @@ Creating/destroying bullets, enemies, particles every frame thrashes GC and stut
 
 ```js
 this.bullets = this.physics.add.group({
-  classType: Bullet, maxSize: 64, runChildUpdate: true
+  classType: Bullet,
+  maxSize: 64,
+  runChildUpdate: true,
 });
 // fire:
-const b = this.bullets.get(x, y);        // reuse dead one or make new (up to maxSize)
-if (!b) return;                          // pool exhausted → skip
-b.enableBody(true, x, y, true, true);    // reactivate + show
+const b = this.bullets.get(x, y); // reuse dead one or make new (up to maxSize)
+if (!b) return; // pool exhausted → skip
+b.enableBody(true, x, y, true, true); // reactivate + show
 // on expire/off-screen: DON'T destroy — recycle:
-b.disableBody(true, true);               // deactivate + hide, returns to pool
+b.disableBody(true, true); // deactivate + hide, returns to pool
 ```
 
 - `get()` returns an **inactive** member (recycled) or creates a new one until `maxSize`; returns `null` when full — always null-check.
@@ -265,6 +292,7 @@ b.disableBody(true, true);               // deactivate + hide, returns to pool
 ---
 
 ## Sources
+
 - Phaser official docs — Scenes (lifecycle, systems, control methods, restart pitfalls): https://docs.phaser.io/phaser/concepts/scenes
 - Phaser docs — Arcade Physics: https://docs.phaser.io/phaser/concepts/physics/arcade ; Matter Physics: https://docs.phaser.io/phaser/concepts/physics/matter
 - Phaser docs — Scale Manager: https://docs.phaser.io/phaser/concepts/scale-manager

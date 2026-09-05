@@ -24,16 +24,16 @@ When a task spans gameplay and UI, apply this skill **only** to the overlay / DO
 
 These are hard fails. Fix before polish.
 
-| Ban | Instead |
-| --- | --- |
-| Emoji in UI chrome, buttons, empty states, headings, or labels | Plain typography, sparse SVG icons (monochrome or single accent), or nothing |
-| Purple, violet, magenta, or yellow / gold as brand or accent fills | Near-neutral surfaces; one restrained accent (cool blue-gray, ink, or soft white on dark) |
-| Loud multi-stop gradients on backgrounds, buttons, or cards | Flat or near-flat surfaces; at most a **barely** perceptible linear wash (≤8% lightness delta) on large hero fields |
-| Rainbow borders, neon glows, glassmorphism soup | Thin neutral borders (`1px`, low-contrast), soft single-layer shadows or hairline dividers |
-| Default Inter-everything with no hierarchy | Deliberate display + body pairing and weight steps (see Typography) |
-| Identical radius on parent and child | **Concentric** radii (see Border radius) |
-| Random spacing and magic numbers | Tokenized spacing scale |
-| Random bounce on every control | Short, tokenized motion (see Motion); reserve overshoot for rare micro moments (badge pop only) |
+| Ban                                                                | Instead                                                                                                             |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| Emoji in UI chrome, buttons, empty states, headings, or labels     | Plain typography, sparse SVG icons (monochrome or single accent), or nothing                                        |
+| Purple, violet, magenta, or yellow / gold as brand or accent fills | Near-neutral surfaces; one restrained accent (cool blue-gray, ink, or soft white on dark)                           |
+| Loud multi-stop gradients on backgrounds, buttons, or cards        | Flat or near-flat surfaces; at most a **barely** perceptible linear wash (≤8% lightness delta) on large hero fields |
+| Rainbow borders, neon glows, glassmorphism soup                    | Thin neutral borders (`1px`, low-contrast), soft single-layer shadows or hairline dividers                          |
+| Default Inter-everything with no hierarchy                         | Deliberate display + body pairing and weight steps (see Typography)                                                 |
+| Identical radius on parent and child                               | **Concentric** radii (see Border radius)                                                                            |
+| Random spacing and magic numbers                                   | Tokenized spacing scale                                                                                             |
+| Random bounce on every control                                     | Short, tokenized motion (see Motion); reserve overshoot for rare micro moments (badge pop only)                     |
 
 ## Visual language
 
@@ -158,12 +158,12 @@ outerRadius = innerRadius + padding
 
 Example: card with `padding: 16px` and inner control radius `8px` → card radius `24px` (`--radius-xl` if tokens map that way).
 
-| Situation | Approach |
-| --- | --- |
-| Card containing buttons / inputs | Card uses larger radius; children use smaller from the scale |
-| Nested panels | Each nesting level steps **down** one radius token |
-| Pill controls | Full pill (`9999px`) only for small chips/buttons — not for large cards |
-| Modals / sheets | `--radius-lg` or `--radius-xl` on the shell; inner sections `--radius-sm` / `--radius-md` |
+| Situation                        | Approach                                                                                  |
+| -------------------------------- | ----------------------------------------------------------------------------------------- |
+| Card containing buttons / inputs | Card uses larger radius; children use smaller from the scale                              |
+| Nested panels                    | Each nesting level steps **down** one radius token                                        |
+| Pill controls                    | Full pill (`9999px`) only for small chips/buttons — not for large cards                   |
+| Modals / sheets                  | `--radius-lg` or `--radius-xl` on the shell; inner sections `--radius-sm` / `--radius-md` |
 
 Never set the same radius on parent and padded child.
 
@@ -176,13 +176,13 @@ Never set the same radius on parent and padded child.
 
 **Weights (typical scale)**
 
-| Role | Weight | Notes |
-| --- | --- | --- |
+| Role           | Weight  | Notes                                          |
+| -------------- | ------- | ---------------------------------------------- |
 | Hero / display | 500–600 | Slightly tight tracking (`--tracking-display`) |
-| Section titles | 500–600 | Snug leading |
-| Body | 400 | Normal leading |
-| Labels / meta | 500 | Smaller size, muted color |
-| Buttons | 500–600 | Never ultra-black 900 on large type |
+| Section titles | 500–600 | Snug leading                                   |
+| Body           | 400     | Normal leading                                 |
+| Labels / meta  | 500     | Smaller size, muted color                      |
+| Buttons        | 500–600 | Never ultra-black 900 on large type            |
 
 **Avoid**
 
@@ -230,17 +230,17 @@ npx shadcn@latest add button card dialog input label select sheet tabs badge too
 
 ### Reach for shadcn first
 
-| Need | Prefer (shadcn) | Notes |
-| --- | --- | --- |
-| Primary / secondary actions | `Button` | Variants for hierarchy; optional subtle `scale(0.98)` on press |
-| Text fields | `Input` / `Textarea` + `Label` | Consistent height (~40–44px), focus ring via theme |
-| Confirm / pause / win-lose | `Dialog` or `AlertDialog` | Destructive confirms use `AlertDialog` |
-| Settings / side panels | `Sheet` | Edge panels over custom drawers when possible |
-| Overflow menus | `DropdownMenu` / `Popover` | Origin-aware from trigger |
-| Grouped content | `Card` + `Separator` | Concentric radii with inner controls |
-| Status / filters | `Badge` / `Tabs` | Quiet variants; no emoji |
-| Hover hints | `Tooltip` | Delayed first show; instant siblings when appropriate |
-| Loading placeholders | `Skeleton` | Then cross-fade to content |
+| Need                        | Prefer (shadcn)                | Notes                                                          |
+| --------------------------- | ------------------------------ | -------------------------------------------------------------- |
+| Primary / secondary actions | `Button`                       | Variants for hierarchy; optional subtle `scale(0.98)` on press |
+| Text fields                 | `Input` / `Textarea` + `Label` | Consistent height (~40–44px), focus ring via theme             |
+| Confirm / pause / win-lose  | `Dialog` or `AlertDialog`      | Destructive confirms use `AlertDialog`                         |
+| Settings / side panels      | `Sheet`                        | Edge panels over custom drawers when possible                  |
+| Overflow menus              | `DropdownMenu` / `Popover`     | Origin-aware from trigger                                      |
+| Grouped content             | `Card` + `Separator`           | Concentric radii with inner controls                           |
+| Status / filters            | `Badge` / `Tabs`               | Quiet variants; no emoji                                       |
+| Hover hints                 | `Tooltip`                      | Delayed first show; instant siblings when appropriate          |
+| Loading placeholders        | `Skeleton`                     | Then cross-fade to content                                     |
 
 Do **not** ship raw `<button>` / `<input>` / ad-hoc `div rounded-xl border p-6` shells when a shadcn component covers the need.
 
@@ -289,15 +289,15 @@ Chrome motion should feel like a **small catalog of tuned recipes**, not ad-hoc 
 
 ### Motion token usage (match by role, not by copying random ms)
 
-| Role | Duration token | Easing | Notes |
-| --- | --- | --- | --- |
-| Per-item stagger | `--motion-stagger` (40ms) | — | Stacked text / list enter |
-| Tooltip delay / shake segment | `--motion-micro` (80ms) | — | Small offsets |
-| Menu/modal/tooltip **close**, in-place text swap | `--motion-quick` (150ms) | `--ease-smooth-out` or `--ease-out` | Snappy dismiss |
-| Menu/modal **open**, icon swap, sliding tabs, page slide | `--motion-fast` (250ms) | `--ease-smooth-out` / `--ease-in-out` | Primary opens |
-| Panel dismiss | `--motion-medium` (350ms) | `--ease-smooth-out` | Slightly heavier surfaces |
-| Panel open, skeleton → content, clear dissolve | `--motion-slow` (400ms) | `--ease-smooth-out` / `--ease-in-out` | Contentful reveals |
-| Badge appear, hero line reveal, rare success flourish | `--motion-emphasis` (500ms) | smooth-out or `--ease-pop` for badge only | Use sparingly on overlays |
+| Role                                                     | Duration token              | Easing                                    | Notes                     |
+| -------------------------------------------------------- | --------------------------- | ----------------------------------------- | ------------------------- |
+| Per-item stagger                                         | `--motion-stagger` (40ms)   | —                                         | Stacked text / list enter |
+| Tooltip delay / shake segment                            | `--motion-micro` (80ms)     | —                                         | Small offsets             |
+| Menu/modal/tooltip **close**, in-place text swap         | `--motion-quick` (150ms)    | `--ease-smooth-out` or `--ease-out`       | Snappy dismiss            |
+| Menu/modal **open**, icon swap, sliding tabs, page slide | `--motion-fast` (250ms)     | `--ease-smooth-out` / `--ease-in-out`     | Primary opens             |
+| Panel dismiss                                            | `--motion-medium` (350ms)   | `--ease-smooth-out`                       | Slightly heavier surfaces |
+| Panel open, skeleton → content, clear dissolve           | `--motion-slow` (400ms)     | `--ease-smooth-out` / `--ease-in-out`     | Contentful reveals        |
+| Badge appear, hero line reveal, rare success flourish    | `--motion-emphasis` (500ms) | smooth-out or `--ease-pop` for badge only | Use sparingly on overlays |
 
 **Blur on crossfade** (when two states overlap oddly): `--motion-blur-sm` (2px) for icon/text/number swaps; `--motion-blur-md` (3px) for page/panel slides. Keep blur off for simple opacity fades.
 
@@ -305,25 +305,25 @@ Chrome motion should feel like a **small catalog of tuned recipes**, not ad-hoc 
 
 Match the **visible element + verb**, then implement with tokens above:
 
-| If you see… | Use this transition recipe |
-| --- | --- |
+| If you see…                                            | Use this transition recipe                                                                                                                                                             |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Trigger + surface growing from it (settings, overflow) | **Origin-aware menu** — open `scale(--motion-scale-menu→1)` + opacity, `--motion-fast` / `--ease-smooth-out`; close faster (`--motion-quick`) with slightly higher scale floor (~0.99) |
-| Centered pause / win / confirm dialog | **Modal** — open from `--motion-scale-modal`, `--motion-fast`; close `--motion-quick`; backdrop fades with opacity only |
-| Sheet / drawer into an edge of the overlay | **Panel reveal** — translate on axis + optional `--motion-blur-sm` crossfade; open `--motion-slow`, close `--motion-medium` |
-| List ↔ detail or step 1 ↔ step 2 in overlay | **Side-by-side page** — opposing translateX(`--motion-y-base`) + light blur; `--motion-fast` |
-| Card / HUD cluster changing width or height | **Layout resize** — transition `width`/`height` or grid tracks with `--ease-smooth-out` and `--motion-fast` (avoid animating padding if possible) |
-| Score / timer / counter updating | **Number pop-in** — per-digit re-enter with `--motion-y-micro` + `--motion-blur-sm`; stagger `--motion-stagger`; `tabular-nums` |
-| Label / status text changing in one slot | **Text state swap** — outgoing slides/fades one way, incoming the other, light blur; `--motion-quick` |
-| Two icons in one control (play/pause, mute) | **Icon swap** — cross-fade + scale + `--motion-blur-sm`; `--motion-fast` / `--ease-in-out`; keep both in DOM during swap |
-| Small notification dot on a control | **Badge** — short diagonal/offset enter; optional `--ease-pop` once — not on every hover |
-| Horizontal chips / avatar stack hover | **Distance falloff lift** — neighbors lift less; bouncy ease **only on mouseleave return**, set timing in JS before writing transform vars |
-| Invalid field / failed action | **Error shake** — short segmented translateX with cubic segments; separate “error styling” class from “shake” class so shake can replay |
-| Search/filter clear | **Clear dissolve** — control exits with motion; optional per-word streak; `--motion-slow` |
-| Placeholder → loaded overlay content | **Skeleton reveal** — pulse with linear, then cross-fade + light blur to real content; `--motion-slow` |
-| Loading / “thinking” status line | **Shimmer text** — masked highlight sweep, **linear**, loop; pure CSS; muted foreground |
-| Segmented control / filter tabs | **Sliding pill** — move highlight with `transform` + width; first paint and resize with `transition: none` then restore |
-| Hover hint on icon/control | **Tooltip** — delayed fade+scale in (`--motion-scale-tooltip`, `--motion-quick` / `--ease-out`); **instant or near-instant out**; subsequent siblings can skip delay (`data-instant`) |
-| Title + subtitle entering a start screen | **Staggered text reveal** — blurred rise `--motion-y-medium`, stagger `--motion-stagger`–`--motion-micro`; quiet fade on exit |
+| Centered pause / win / confirm dialog                  | **Modal** — open from `--motion-scale-modal`, `--motion-fast`; close `--motion-quick`; backdrop fades with opacity only                                                                |
+| Sheet / drawer into an edge of the overlay             | **Panel reveal** — translate on axis + optional `--motion-blur-sm` crossfade; open `--motion-slow`, close `--motion-medium`                                                            |
+| List ↔ detail or step 1 ↔ step 2 in overlay            | **Side-by-side page** — opposing translateX(`--motion-y-base`) + light blur; `--motion-fast`                                                                                           |
+| Card / HUD cluster changing width or height            | **Layout resize** — transition `width`/`height` or grid tracks with `--ease-smooth-out` and `--motion-fast` (avoid animating padding if possible)                                      |
+| Score / timer / counter updating                       | **Number pop-in** — per-digit re-enter with `--motion-y-micro` + `--motion-blur-sm`; stagger `--motion-stagger`; `tabular-nums`                                                        |
+| Label / status text changing in one slot               | **Text state swap** — outgoing slides/fades one way, incoming the other, light blur; `--motion-quick`                                                                                  |
+| Two icons in one control (play/pause, mute)            | **Icon swap** — cross-fade + scale + `--motion-blur-sm`; `--motion-fast` / `--ease-in-out`; keep both in DOM during swap                                                               |
+| Small notification dot on a control                    | **Badge** — short diagonal/offset enter; optional `--ease-pop` once — not on every hover                                                                                               |
+| Horizontal chips / avatar stack hover                  | **Distance falloff lift** — neighbors lift less; bouncy ease **only on mouseleave return**, set timing in JS before writing transform vars                                             |
+| Invalid field / failed action                          | **Error shake** — short segmented translateX with cubic segments; separate “error styling” class from “shake” class so shake can replay                                                |
+| Search/filter clear                                    | **Clear dissolve** — control exits with motion; optional per-word streak; `--motion-slow`                                                                                              |
+| Placeholder → loaded overlay content                   | **Skeleton reveal** — pulse with linear, then cross-fade + light blur to real content; `--motion-slow`                                                                                 |
+| Loading / “thinking” status line                       | **Shimmer text** — masked highlight sweep, **linear**, loop; pure CSS; muted foreground                                                                                                |
+| Segmented control / filter tabs                        | **Sliding pill** — move highlight with `transform` + width; first paint and resize with `transition: none` then restore                                                                |
+| Hover hint on icon/control                             | **Tooltip** — delayed fade+scale in (`--motion-scale-tooltip`, `--motion-quick` / `--ease-out`); **instant or near-instant out**; subsequent siblings can skip delay (`data-instant`)  |
+| Title + subtitle entering a start screen               | **Staggered text reveal** — blurred rise `--motion-y-medium`, stagger `--motion-stagger`–`--motion-micro`; quiet fade on exit                                                          |
 
 **Tie-breakers:** prefer lower overhead (resize over panel, menu over modal, icon swap + checkmark over a full celebration modal). Don’t stack three recipes on one interaction.
 
@@ -336,15 +336,15 @@ Match the **visible element + verb**, then implement with tokens above:
 
 ### Anti-patterns
 
-| Avoid | Prefer |
-| --- | --- |
-| `transition: all` | Explicit `opacity, transform` (and blur only when needed) |
-| One duration for open and close | Asymmetric open/close tokens |
-| Keyframes for hover toggles | CSS transitions (interruptible) |
-| Animating the outer page wrapper for a badge | Animate the badge/dot only |
-| Hardcoded ms in JS timeouts that drift from CSS | Read `--motion-*` from computed styles |
-| Success stroke `stroke-dasharray` guesses | `path.getTotalLength()` (+1) for your path |
-| Mixing error styling + shake in one class | Orthogonal classes so shake can reflow-replay |
+| Avoid                                           | Prefer                                                    |
+| ----------------------------------------------- | --------------------------------------------------------- |
+| `transition: all`                               | Explicit `opacity, transform` (and blur only when needed) |
+| One duration for open and close                 | Asymmetric open/close tokens                              |
+| Keyframes for hover toggles                     | CSS transitions (interruptible)                           |
+| Animating the outer page wrapper for a badge    | Animate the badge/dot only                                |
+| Hardcoded ms in JS timeouts that drift from CSS | Read `--motion-*` from computed styles                    |
+| Success stroke `stroke-dasharray` guesses       | `path.getTotalLength()` (+1) for your path                |
+| Mixing error styling + shake in one class       | Orthogonal classes so shake can reflow-replay             |
 
 ## Content tone in the UI
 
@@ -374,11 +374,11 @@ Before calling UI done:
 
 When reviewing UI against this skill, use a markdown table:
 
-| Before | After | Why |
-| --- | --- | --- |
-| Purple gradient CTA | Flat near-white primary on dark | Removes slop accent; quieter hierarchy |
-| Card and button both `12px` radius with 16px pad | Card `28px`, button `12px` | Concentric radii |
-| Title with emoji | Title plain, weight 600 | No emoji in chrome |
-| `transition: all 300ms` on menu | `opacity/transform` with `--motion-fast` open / `--motion-quick` close, `--ease-smooth-out` | Tokenized, asymmetric, interruptible |
-| Score textContent swap with no motion | Per-digit pop-in, `--motion-y-micro`, tabular-nums | Matches counter recipe |
-| Modal scales from `0` | From `--motion-scale-modal` (0.96) | Avoid zero-scale pop-in |
+| Before                                           | After                                                                                       | Why                                    |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------- | -------------------------------------- |
+| Purple gradient CTA                              | Flat near-white primary on dark                                                             | Removes slop accent; quieter hierarchy |
+| Card and button both `12px` radius with 16px pad | Card `28px`, button `12px`                                                                  | Concentric radii                       |
+| Title with emoji                                 | Title plain, weight 600                                                                     | No emoji in chrome                     |
+| `transition: all 300ms` on menu                  | `opacity/transform` with `--motion-fast` open / `--motion-quick` close, `--ease-smooth-out` | Tokenized, asymmetric, interruptible   |
+| Score textContent swap with no motion            | Per-digit pop-in, `--motion-y-micro`, tabular-nums                                          | Matches counter recipe                 |
+| Modal scales from `0`                            | From `--motion-scale-modal` (0.96)                                                          | Avoid zero-scale pop-in                |

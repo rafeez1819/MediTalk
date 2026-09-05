@@ -50,8 +50,8 @@ the sandbox live preview, leave `DATABASE_URL` unset — `@/lib/db` automaticall
 uses embedded PGLite. When the app is deployed, the platform injects
 `DATABASE_URL` (Neon); you do not provision or write it yourself.
 
-| Var | Where | Purpose |
-|---|---|---|
+| Var            | Where  | Purpose                                                                    |
+| -------------- | ------ | -------------------------------------------------------------------------- |
 | `DATABASE_URL` | server | Neon connection string when deployed (optional — PGLite fallback if unset) |
 
 Never hardcode it; never expose non-`VITE_` vars to the client.
@@ -89,7 +89,10 @@ export const listTodos = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
     const sql = await getSql();
-    return sql<{ id: number; title: string }>`select id, title from todos where user_id = ${context.userId} order by id desc`;
+    return sql<{
+      id: number;
+      title: string;
+    }>`select id, title from todos where user_id = ${context.userId} order by id desc`;
   });
 // mutations must scope writes too: `... where id = ${id} and user_id = ${context.userId}`
 ```

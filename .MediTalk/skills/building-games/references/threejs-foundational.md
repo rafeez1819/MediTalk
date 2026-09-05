@@ -7,6 +7,7 @@ Consolidated from official docs, well-regarded tutorials, and engine forums (see
 ## 1. Game loop & timing (the #1 correctness issue)
 
 **Rules:**
+
 - Drive the loop with **`renderer.setAnimationLoop(fn)`** in Three.js (internally uses `requestAnimationFrame`, plays nicely with WebXR) or the engine's built-in loop (Phaser `update(time, delta)`, Babylon `scene.onBeforeRenderObservable` / `engine.runRenderLoop`). Avoid `setTimeout`/`setInterval` and `Date.now()`.
 - **Scale ALL movement/animation by delta time** (seconds since last frame) so speed is frame-rate independent (30fps laptop vs 144Hz monitor). e.g. `mesh.position.x += speed * delta`.
 - **Cap delta** to avoid huge jumps after a backgrounded tab: `delta = Math.min(delta, 0.1)`.
@@ -17,14 +18,19 @@ Consolidated from official docs, well-regarded tutorials, and engine forums (see
 - **On-demand rendering**: if nothing is animating, stop the loop / render only on change to save battery (Three.js `setAnimationLoop(null)`; R3F `frameloop="demand"`).
 
 **Reference pattern (Three.js, Timer + capped delta + fixed step):**
+
 ```js
 const timer = new THREE.Timer();
-let accumulator = 0; const FIXED = 1/60;
+let accumulator = 0;
+const FIXED = 1 / 60;
 function animate() {
   timer.update();
   let delta = Math.min(timer.getDelta(), 0.25);
   accumulator += delta;
-  while (accumulator >= FIXED) { fixedUpdate(FIXED); accumulator -= FIXED; } // physics/AI
+  while (accumulator >= FIXED) {
+    fixedUpdate(FIXED);
+    accumulator -= FIXED;
+  } // physics/AI
   updateVisuals(delta);
   renderer.render(scene, camera);
 }
@@ -38,6 +44,7 @@ renderer.setAnimationLoop(animate);
 The canonical reference is the official `misc_controls_pointerlock` example (https://threejs.org/examples/misc_controls_pointerlock.html).
 
 **Key facts & rules:**
+
 - **`PointerLockControls` only handles the Pointer Lock API + mouse-look (yaw/pitch). It does NOT include WASD movement — you implement keyboard + translation yourself.**
 - Add **`controls.getObject()`** (the yaw container) to the scene, not the camera directly; the camera is a child for pitch.
 - Track keys with **boolean state flags** set in `keydown`/`keyup` (support both `KeyW`/`ArrowUp`, etc.). Do NOT move on the keydown event itself.
@@ -50,6 +57,7 @@ The canonical reference is the official `misc_controls_pointerlock` example (htt
 - R3F: use drei `<PointerLockControls />` + `useKeyboardControls` + `useFrame`.
 
 **Other camera rigs:**
+
 - **Orbit / product inspection:** Three.js `OrbitControls`; Babylon `ArcRotateCamera` (set `lower/upperRadiusLimit`, `lower/upperBetaLimit`, `inertia`, `panningSensibility`).
 - **Third-person follow:** lerp camera toward a target offset behind the player each frame; `camera.lookAt(player)`; Babylon has `FollowCamera`.
 - Keep the far plane / `camera.maxZ` (Babylon) as small as practical — improves culling, overdraw, and depth precision.
@@ -63,7 +71,7 @@ The canonical reference is the official `misc_controls_pointerlock` example (htt
   - Most `Object3D` (Mesh/Group): **local forward is +Z** `(0,0,1)`. Model/rotate so the "front" aligns with +Z.
   - **Camera** (and some lights): forward is **local −Z** `(0,0,-1)`. This is the classic "camera looks backwards" gotcha.
 - Many primitives (`ConeGeometry`, `CylinderGeometry`) point along **+Y** by default → rotate before use, e.g. `geo.rotateX(Math.PI/2)` to make +Y → +Z (align an arrow/cone's tip with forward).
-- **`object.lookAt(target)`** rotates in **world space** so the forward axis points at the target (uses `.up`, quaternions internally; does not move the object). For nested targets, first `target.getWorldPosition(v)`. To face a *direction* vector: `obj.lookAt(obj.position.clone().add(dir))`.
+- **`object.lookAt(target)`** rotates in **world space** so the forward axis points at the target (uses `.up`, quaternions internally; does not move the object). For nested targets, first `target.getWorldPosition(v)`. To face a _direction_ vector: `obj.lookAt(obj.position.clone().add(dir))`.
 - Imported glTF/GLB models may need an initial rotation to match +Z-forward. glTF/Blender export is right-handed Y-up, consistent with Three.js.
 - Debug with `AxesHelper` and `ArrowHelper` to visualize orientation quickly.
 
@@ -74,8 +82,8 @@ The canonical reference is the official `misc_controls_pointerlock` example (htt
 **The #1 killer is draw calls** (`renderer.info.render.calls`). Target **<100/frame** for smooth 60fps on most hardware; 500+ stutters; mobile is stricter.
 
 - **Share materials** aggressively (reuse one material instance across meshes).
-- **Instancing (`InstancedMesh`)** for many *identical* objects (trees, crowds, bullets) → one draw call; update via `setMatrixAt` + `instanceMatrix.needsUpdate`. Note: default frustum culling applies to the whole instanced mesh.
-- **`BatchedMesh`** (r156+) for *varied* geometries sharing one material, with per-object visibility + `perObjectFrustumCulled`.
+- **Instancing (`InstancedMesh`)** for many _identical_ objects (trees, crowds, bullets) → one draw call; update via `setMatrixAt` + `instanceMatrix.needsUpdate`. Note: default frustum culling applies to the whole instanced mesh.
+- **`BatchedMesh`** (r156+) for _varied_ geometries sharing one material, with per-object visibility + `perObjectFrustumCulled`.
 - **Merge geometries** (`BufferGeometryUtils.mergeGeometries`) for fully static scenery sharing a material (loses per-object culling — one bounding volume).
 - **Frustum culling** is automatic (`mesh.frustumCulled`); after modifying geometry call `computeBoundingBox()`/`computeBoundingSphere()`. Reduce `camera.far` where possible.
 - **Dispose GPU resources manually** — Three.js does NOT GC them. On removing objects/switching levels: `geometry.dispose()`, `material.dispose()`, and dispose all textures. Watch `renderer.info.memory`. Use **object pooling** for particles/enemies instead of create/destroy churn.
@@ -123,6 +131,7 @@ The canonical reference is the official `misc_controls_pointerlock` example (htt
 ---
 
 ## 8. Common browser-game bugs to prevent (checklist)
+
 - Movement tied to frame rate (no delta) → runs too fast/slow on different displays.
 - `Clock.getDelta()` called multiple times per frame → things freeze/jitter.
 - Model faces wrong way → forgot +Z-forward convention / camera −Z; fix geometry rotation or `lookAt`.
@@ -137,6 +146,7 @@ The canonical reference is the official `misc_controls_pointerlock` example (htt
 ---
 
 ## Sources
+
 - Three.js official: PointerLock example (https://threejs.org/examples/misc_controls_pointerlock.html), docs for `Timer`, `Object3D.lookAt`, `InstancedMesh`, `BatchedMesh` (https://threejs.org/docs/).
 - "Discover three.js" — animation loop / Loop class (https://discoverthreejs.com/book/first-steps/animation-loop/).
 - Three.js Discourse (Clock→Timer r183, setAnimationLoop vs RAF, coordinate-system threads) — https://discourse.threejs.org/.

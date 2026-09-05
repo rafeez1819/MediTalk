@@ -1,12 +1,12 @@
 # Game Feel & Juice (screenshake, hitstop, tweening/easing, particles, squash & stretch, camera, SFX layering)
 
-The canon: Steve Swink's *Game Feel*, Vlambeer/"Juice it or lose it" (Martin Jonasson & Petri Purho), and Jan Willem Nijman's "The art of screenshake" (see Sources). "Juice" = generous, layered, non-gameplay-affecting feedback that makes every input feel physical and satisfying. Focus: what an AI builder should reflexively add so games feel **alive instead of static**, without hurting readability or perf.
+The canon: Steve Swink's _Game Feel_, Vlambeer/"Juice it or lose it" (Martin Jonasson & Petri Purho), and Jan Willem Nijman's "The art of screenshake" (see Sources). "Juice" = generous, layered, non-gameplay-affecting feedback that makes every input feel physical and satisfying. Focus: what an AI builder should reflexively add so games feel **alive instead of static**, without hurting readability or perf.
 
 ---
 
 ## 1. The core principle
 
-**Every meaningful action should produce disproportionate, multi-sensory feedback.** A single "hit" should simultaneously trigger several of: sound, particles, screenshake, hitstop, flash, knockback, squash/stretch, and a number/pop. The gameplay math can stay simple — the *feel* comes from the feedback layer stacked on top. The classic demo takes the same identical Breakout and makes it feel amazing purely by adding these layers.
+**Every meaningful action should produce disproportionate, multi-sensory feedback.** A single "hit" should simultaneously trigger several of: sound, particles, screenshake, hitstop, flash, knockback, squash/stretch, and a number/pop. The gameplay math can stay simple — the _feel_ comes from the feedback layer stacked on top. The classic demo takes the same identical Breakout and makes it feel amazing purely by adding these layers.
 
 **Rule:** Separate "simulation" from "presentation." Feedback (shake, tween, particles, flash) must **never change gameplay outcomes** — it's cosmetic. This keeps physics deterministic (important for netcode/replays) while letting you pile on juice freely.
 
@@ -29,7 +29,7 @@ Nijman's rules also include: **more bullets, bigger bullets, muzzle flash, impac
 
 - On a big hit, **freeze the game (or just the two involved entities) for a few frames** (~30–120ms), then resume. This sells impact enormously — the brain reads the pause as force.
 - Implement as a global **time scale** or a short "freeze frames" counter: while frozen, skip the gameplay update (or set `timeScale=0`) but **keep rendering** and keep the flash/particles visible. Common: freeze ~2–6 frames for normal hits, longer for finishers.
-- Keep hitstop **short**; too long feels laggy/unresponsive. Often paired with a brief hit **flash** (tint the sprite white for 1–2 frames) and knockback that starts *after* the freeze.
+- Keep hitstop **short**; too long feels laggy/unresponsive. Often paired with a brief hit **flash** (tint the sprite white for 1–2 frames) and knockback that starts _after_ the freeze.
 - Distinguish **hitstop** (brief freeze for feel) from **hitstun** (gameplay state where a hit character can't act) — the latter is real gameplay, the former is pure juice.
 
 ---
@@ -82,6 +82,7 @@ Nijman's rules also include: **more bullets, bigger bullets, muzzle flash, impac
 ---
 
 ## 8. Don't over-juice (readability & perf guardrails)
+
 - **Juice must not obscure gameplay.** If shake/flash/particles hide the player, enemies, or projectiles, dial back. Readability > spectacle.
 - **Accessibility:** provide toggles/sliders for screen shake, flashing, and reduced motion (respect `prefers-reduced-motion`). Heavy flashing risks photosensitivity — avoid rapid full-screen strobing.
 - **Perf:** pool particles/tweens, cap concurrent particles, don't allocate in the hit path. Juice is cheap but "thousands of unpooled particles per explosion" is not.
@@ -90,6 +91,7 @@ Nijman's rules also include: **more bullets, bigger bullets, muzzle flash, impac
 ---
 
 ## Defaults to apply
+
 - **Auto-juice defaults:** whenever the builder generates a hit/pickup/death/land/win event, reflexively attach the stack: **sound + particles + short hitstop + white flash + screenshake(trauma²) + easeOutBack pop / squash-stretch + floating number.** Same simple gameplay, dramatically better feel — this is the single biggest perceived-quality lever.
 - **Ship a tiny reusable "juice" toolkit** in generated games: a `trauma`-based shake (squared, noise-driven, decaying), a `hitstop(frames)` helper (timeScale/freeze-count), a `flash(sprite)` helper, easing/tween helpers (or GSAP/tween.js), and frame-rate-correct camera follow with lerp + lookahead + deadzone.
 - **Always use the `exp`-based lerp** for cameras/followers so smoothing is frame-rate independent — bake this in to avoid the classic 144Hz-vs-60Hz bug.
@@ -98,9 +100,10 @@ Nijman's rules also include: **more bullets, bigger bullets, muzzle flash, impac
 ---
 
 ## Sources
+
 - Martin Jonasson & Petri Purho — "Juice it or lose it" (GDC talk): https://www.youtube.com/watch?v=Fy0aCDmgnxg ; companion "Game feel" write-up on grapefrukt.
 - Jan Willem Nijman (Vlambeer) — "The art of screenshake": https://www.youtube.com/watch?v=AJdEqssNZ-U
-- Steve Swink — *Game Feel: A Game Designer's Guide to Virtual Sensation* (book), gamefeelbook.com.
+- Steve Swink — _Game Feel: A Game Designer's Guide to Virtual Sensation_ (book), gamefeelbook.com.
 - Squirrel Eiserloh — "Juicing Your Cameras With Math" (GDC, trauma² screenshake): https://www.youtube.com/watch?v=tu-Qe66AvtY
 - easings.net — easing function reference with formulas & graphs: https://easings.net/
 - Robert Penner's easing equations (origin of the standard easings): http://robertpenner.com/easing/

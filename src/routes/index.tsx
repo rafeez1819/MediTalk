@@ -36,8 +36,8 @@ function Home() {
                 Clear talk at the bedside.
               </h1>
               <p className="mt-3 max-w-xl text-base leading-relaxed text-muted">
-                Hand the phone across the room. MediTalk translates care conversations,
-                keeps a clinical phrasebook ready, and turns jargon into everyday words.
+                Hand the phone across the room. MediTalk translates care conversations, keeps a
+                clinical phrasebook ready, and turns jargon into everyday words.
               </p>
             </div>
           </div>
@@ -114,8 +114,18 @@ function Home() {
 
         <div className="grid gap-2 sm:grid-cols-3">
           {[
-            { to: "/pain" as const, icon: HeartPulse, label: "Pain scale", hint: "0–10 with faces" },
-            { to: "/terms" as const, icon: CircleHelp, label: "Terms", hint: "Plain-language glossary" },
+            {
+              to: "/pain" as const,
+              icon: HeartPulse,
+              label: "Pain scale",
+              hint: "0–10 with faces",
+            },
+            {
+              to: "/terms" as const,
+              icon: CircleHelp,
+              label: "Terms",
+              hint: "Plain-language glossary",
+            },
             { to: "/learn" as const, icon: BookOpen, label: "Learn", hint: "Staff language drill" },
           ].map((card) => (
             <button

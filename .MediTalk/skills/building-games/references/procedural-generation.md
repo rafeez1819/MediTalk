@@ -9,10 +9,11 @@ Consolidated from Red Blob Games, the simplex-noise library, and WFC primary sou
 `Math.random()` is **not seedable**, so you can't reproduce a level, share a seed, debug a bad map, or sync generation across clients in multiplayer. **Always drive procedural generation from a seeded PRNG.**
 
 **mulberry32** — the go-to small, fast, good-quality 32-bit seeded PRNG:
+
 ```js
 function mulberry32(seed) {
   return function () {
-    let t = (seed += 0x6D2B79F5);
+    let t = (seed += 0x6d2b79f5);
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296; // [0,1)
@@ -22,10 +23,11 @@ const rng = mulberry32(12345); // same seed → identical sequence forever
 ```
 
 Rules:
+
 - **Hash string seeds to an int first** (e.g. `xmur3`) so `"cave-42"` maps to a stable number.
 - **Use separate RNG streams for independent systems** (terrain vs loot vs enemy placement) so changing one doesn't reshuffle the others (`mulberry32(seed)`, `mulberry32(seed ^ 0x9e3779b9)`, …).
 - Add helpers: `randRange(a,b)=a+rng()*(b-a)`, `randInt`, `pick(arr)`, `shuffle` (Fisher–Yates using `rng`).
-- For **networked/deterministic** generation, both sides must run the *same* PRNG and consume it in the *same order* (deterministic multiplayer is out of scope on this deploy target). Order-of-consumption bugs are the #1 desync source.
+- For **networked/deterministic** generation, both sides must run the _same_ PRNG and consume it in the _same order_ (deterministic multiplayer is out of scope on this deploy target). Order-of-consumption bugs are the #1 desync source.
 - Alternatives: `alea`, PCG. mulberry32 is plenty for games.
 
 ---
@@ -39,13 +41,14 @@ Random-per-cell is white noise (harsh, uncorrelated). **Coherent noise** produce
 - **Simplex / OpenSimplex** — fewer directional artifacts, scales better to higher dimensions; preferred default. Use the **`simplex-noise` npm package**.
   - **v4 API changed:** no more `new SimplexNoise()`. Use factory functions and pass your seeded PRNG:
   ```js
-  import { createNoise2D } from 'simplex-noise';
+  import { createNoise2D } from "simplex-noise";
   const noise2D = createNoise2D(mulberry32(12345)); // returns ~[-1, 1]
-  const v = noise2D(x * 0.01, y * 0.01);            // scale coords = "frequency"
+  const v = noise2D(x * 0.01, y * 0.01); // scale coords = "frequency"
   ```
   (Also `createNoise3D`/`createNoise4D`; passing a PRNG makes output reproducible — without one it uses `Math.random()` = non-reproducible.)
 
 **Key techniques (from Red Blob Games "Making maps with noise"):**
+
 - **Frequency:** multiply input coords by a scale; small scale = large smooth features.
 - **Octaves / fBm:** sum several noise layers at increasing frequency and decreasing amplitude (`amplitude *= persistence(≈0.5)`, `frequency *= lacunarity(≈2)`) for natural detail.
 - **Normalize** noise from [−1,1] to [0,1] before thresholding.
@@ -58,6 +61,7 @@ Random-per-cell is white noise (harsh, uncorrelated). **Coherent noise** produce
 ## 3. Dungeon / room generation
 
 Common approaches, pick per game:
+
 - **Rooms + corridors (BSP or random placement):** place non-overlapping rooms, then connect. BSP recursively splits space and puts a room in each leaf; connect sibling leaves → guaranteed structure. Random placement: drop rooms, reject overlaps, connect with L-shaped/A* corridors.
 - **Cellular automata caves:** fill grid randomly (~45% wall), run several smoothing passes (`cell = neighbors≥5 ? wall : floor`) → organic caverns. Then **flood-fill and keep only the largest connected region** (or carve tunnels to connect regions).
 - **Drunkard's walk / random walk:** carve floors along a random walk for winding caves.
@@ -90,22 +94,25 @@ Common approaches, pick per game:
 WFC is a constraint-solver that generates output where every local neighborhood matches examples/adjacency rules — great for tile maps, textures, and levels that must "fit together."
 
 Algorithm (overlapping or simple-tiled):
+
 1. Every cell starts in **superposition** (all tiles possible).
 2. **Observe:** pick the lowest-entropy cell (fewest remaining options) and **collapse** it to one tile (weighted-random).
 3. **Propagate:** remove now-impossible neighbors' options based on adjacency rules; repeat until stable.
 4. Loop until all cells collapsed, or **backtrack/restart on contradiction** (a cell with zero options).
 
 Rules & gotchas:
+
 - Adjacency rules come from a sample image (overlapping model) or hand-authored tile edges (simple-tiled model).
 - **Contradictions happen** — implement restart or backtracking; without it, generation hangs/throws.
 - Weight tiles for aesthetics; use noise (from §2) to bias regional weights for large-scale structure, then WFC for coherent local detail.
 - For JS: **mxgmn/WaveFunctionCollapse** (original), Boris the Brave's write-up + **DeBroglie**, or ndarray-based JS ports.
 
-> Note: Red Blob Games does **not** have a WFC tutorial (a common false citation). Cite Maxim Gumin's repo and Boris the Brave instead. Red Blob Games *is* the canonical source for **noise maps** and **A\*/grids**.
+> Note: Red Blob Games does **not** have a WFC tutorial (a common false citation). Cite Maxim Gumin's repo and Boris the Brave instead. Red Blob Games _is_ the canonical source for **noise maps** and **A\*/grids**.
 
 ---
 
 ## 7. Bug-prevention checklist
+
 - **`Math.random()` for generation** → non-reproducible, unshareable, undebuggable, desyncs multiplayer; use a seeded PRNG.
 - **String seed used directly** → NaN/garbage; hash to int (xmur3) first.
 - **Shared single RNG stream across systems** → tweaking one system reshuffles all; use separate streams.
@@ -120,6 +127,7 @@ Rules & gotchas:
 ---
 
 ## Defaults to apply
+
 - **Every generated procgen game gets a visible/optional seed** driven by **mulberry32** (with xmur3 for string seeds), plus `randRange/randInt/pick/shuffle` helpers and **separate RNG streams** per system. Reproducibility is free QA, shareable content, and multiplayer-safe.
 - **Terrain/organic → seeded `simplex-noise` v4 (`createNoise2D(rng)`) with fBm octaves + redistribution + island mask + independent elevation/moisture** per Red Blob Games.
 - **Dungeons → rooms+corridors or cellular-automata caves, ALWAYS followed by a flood-fill connectivity guarantee** (regenerate on failure). Ship this validation step by default — it prevents the worst procgen bug.
@@ -128,6 +136,7 @@ Rules & gotchas:
 ---
 
 ## Sources
+
 - Red Blob Games — Making maps with noise functions: https://www.redblobgames.com/maps/terrain-from-noise/
 - Red Blob Games — Noise (value/Perlin/simplex intro): https://www.redblobgames.com/articles/noise/introduction.html
 - Red Blob Games — Procedural map/dungeon & grids index: https://www.redblobgames.com/

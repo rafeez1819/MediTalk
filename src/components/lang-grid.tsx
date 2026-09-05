@@ -23,9 +23,7 @@ export function LangGrid({
             onClick={() => onChange(l.id)}
             className={cn(
               "flex min-h-12 flex-col items-start rounded-lg px-3 py-2 text-left shadow-[var(--shadow-border)] transition-[background-color,transform] duration-150 ease-out active:not-disabled:scale-[0.96]",
-              selected
-                ? "bg-accent text-accent-fg"
-                : "bg-elevated text-ink hover:bg-mist",
+              selected ? "bg-accent text-accent-fg" : "bg-elevated text-ink hover:bg-mist",
               disabled && "opacity-35",
             )}
           >

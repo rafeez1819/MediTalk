@@ -16,7 +16,7 @@ Consolidated from MDN game collision docs, Gaffer On Games, Rapier/cannon-es doc
 
 - **AABB (axis-aligned bounding box)** — the workhorse. Two boxes overlap iff they overlap on **both** axes:
   ```js
-  const hit = a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
+  const hit = a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
   ```
   Cheap, ideal for tile maps, most 2D gameplay. Only valid for **non-rotated** boxes.
 - **Circle/distance** — for round objects: compare squared distance to summed radii (`dx*dx+dy*dy < (r1+r2)²` — avoid `sqrt`).
@@ -39,9 +39,10 @@ Checking all pairs is O(n²) — fine for dozens, catastrophic for hundreds/thou
 
 ## 4. Tunneling & swept collision (the top correctness bug)
 
-**Tunneling:** a fast object moves so far in one frame that it passes *through* a thin wall without ever overlapping it on any frame. Discrete AABB checks miss it entirely.
+**Tunneling:** a fast object moves so far in one frame that it passes _through_ a thin wall without ever overlapping it on any frame. Discrete AABB checks miss it entirely.
 
 Fixes (in order of preference):
+
 - **Swept collision (continuous / CCD):** instead of testing the box at its new position, test the **motion path**. **Swept AABB** computes the fraction of the frame `t (0..1)` at which the moving box first touches the target, then moves the object to exactly that contact point and resolves — no overlap ever occurs. Essential for bullets, fast platformers, thin walls.
 - **Substepping / smaller fixed timestep:** break a big move into several small steps and test each. Simpler than swept, good enough for moderate speeds.
 - **Raycast** fast/small projectiles (bullets) instead of moving a body — cast a ray along the travel and hit the first collider.
@@ -50,7 +51,7 @@ Fixes (in order of preference):
 
 ---
 
-## 5. Collision *resolution* (not just detection)
+## 5. Collision _resolution_ (not just detection)
 
 - **AABB resolution:** compute penetration on each axis; push the object out along the **axis of least penetration** (this makes walls/floors behave). Zero the velocity component on the axis you resolved (hitting the floor kills downward velocity).
 - **Resolve axes separately** for platformers ("move X, resolve X, then move Y, resolve Y") — prevents catching on tile seams and gives clean wall-slide behavior.
@@ -63,13 +64,21 @@ Fixes (in order of preference):
 ## 6. Fixed timestep — the stability foundation (tie-in)
 
 **Physics MUST run on a fixed timestep with an accumulator** ("Fix Your Timestep!", Gaffer On Games). Variable `dt` makes collision/physics non-deterministic and unstable (tunneling worsens, springs explode, replays/netcode desync).
+
 ```js
-const STEP = 1/60; let acc = 0;
-function frame(dt){ acc += Math.min(dt, 0.25);        // clamp to avoid spiral-of-death after tab-out
-  while (acc >= STEP){ physicsStep(STEP); acc -= STEP; }
-  const alpha = acc / STEP; render(alpha);            // interpolate between last two states
+const STEP = 1 / 60;
+let acc = 0;
+function frame(dt) {
+  acc += Math.min(dt, 0.25); // clamp to avoid spiral-of-death after tab-out
+  while (acc >= STEP) {
+    physicsStep(STEP);
+    acc -= STEP;
+  }
+  const alpha = acc / STEP;
+  render(alpha); // interpolate between last two states
 }
 ```
+
 - **Clamp accumulated dt** (e.g. ≤0.25s) so a backgrounded tab doesn't trigger a "spiral of death" of catch-up steps.
 - **Interpolate rendering** between the previous and current physics state using `alpha` for smooth visuals at any display rate.
 - All physics engines expect a fixed step — call `world.step()` at a fixed rate, not per rAF with variable dt. Rapier is deterministic given fixed steps + same inputs (good for netcode).
@@ -79,6 +88,7 @@ function frame(dt){ acc += Math.min(dt, 0.25);        // clamp to avoid spiral-o
 ## 7. 3D character controllers
 
 Falling capsules from raw rigid-body dynamics feel bad for players — use a **kinematic character controller**:
+
 - **Rapier `KinematicCharacterController`** (favored): create via `world.createCharacterController(offset)`, use a kinematic body + capsule/collider, then each fixed step call `computeColliderMovement(collider, desiredTranslation)` and read `computedMovement()` to get the collision-corrected move. Built-in **autostep** (stairs), **snap-to-ground** (don't float off slopes/ramps), **max slope climb angle**, and slide-along-walls. Set gravity/jump yourself (kinematic = you control motion).
 - **cannon-es**: `PointerLockControlsCannon` example / a sphere or capsule body; more manual.
 - Rules: use a **capsule** (not a box) so the player slides over small steps and around corners; apply movement each **fixed step**; do ground checks via the controller's grounded flag or a short downward ray; keep the visual mesh synced to the body each frame (with interpolation).
@@ -86,6 +96,7 @@ Falling capsules from raw rigid-body dynamics feel bad for players — use a **k
 ---
 
 ## 8. Bug-prevention checklist
+
 - **Variable timestep for physics** → non-deterministic, jitter, worse tunneling, netcode desync; fixed step + accumulator.
 - **No dt clamp** → "spiral of death" after tab-out; clamp accumulated dt.
 - **Fast objects passing through walls** → tunneling; use swept AABB / CCD / raycast / substeps.
@@ -102,6 +113,7 @@ Falling capsules from raw rigid-body dynamics feel bad for players — use a **k
 ---
 
 ## Defaults to apply
+
 - **Right-size the solution:** hand-rolled **AABB + separate-axis resolution + swept collision** for arcade/2D/platformers; **Rapier** (2D or 3D) when we need real rigid bodies, joints, or a character controller. Don't default to a heavy engine.
 - **Always run physics on a fixed timestep with a clamped accumulator + render interpolation** — this one pattern prevents tunneling instability and jitter, and it ties directly into the fixed-timestep game loop (see `threejs-foundational.md`).
 - **Ship anti-tunneling by default** for fast objects (swept AABB or CCD/raycast for projectiles) and a **broadphase (spatial hash or quadtree)** once there are many colliders.
@@ -110,6 +122,7 @@ Falling capsules from raw rigid-body dynamics feel bad for players — use a **k
 ---
 
 ## Sources
+
 - MDN — 2D collision detection (AABB, circle, SAT): https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
 - Gaffer On Games — "Fix Your Timestep!": https://gafferongames.com/post/fix_your_timestep/ ; "Collision Response and Coulomb Friction": https://gafferongames.com/post/collision_response_and_coulomb_friction/
 - Swept AABB collision — jitter physics / "Swept AABB Collision Detection and Response" (gamedev): https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/

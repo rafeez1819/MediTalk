@@ -18,7 +18,7 @@ A single weapon + one enemy type spawning in waves + juicy hit feedback is alrea
 
 ## 2. Controls & aiming (the twin-stick core)
 
-- **Movement is independent of facing.** Move on a normalized vector; aim on a separate vector. This is *the* genre feature — never couple them (that's a tank/first-person control scheme, not twin-stick).
+- **Movement is independent of facing.** Move on a normalized vector; aim on a separate vector. This is _the_ genre feature — never couple them (that's a tank/first-person control scheme, not twin-stick).
 - **Desktop:** WASD/arrows → move vector; mouse position → aim. Aim angle = `Math.atan2(mouse.y - player.y, mouse.x - player.x)` **in world space** (convert screen→world with the camera scroll/zoom, not raw clientX/Y). Left click = fire.
 - **Gamepad:** left stick = move, right stick = aim/fire (fire when the right stick is deflected past a deadzone). Apply a **radial deadzone** (`if (len < 0.2) zero it`) and optionally re-scale so the edge maps to full speed.
 - **Mobile:** two virtual joysticks (e.g. nipplejs) — left = move, right = aim/fire. Auto-fire while the aim stick is held is friendlier than a separate button.
@@ -88,6 +88,7 @@ A single weapon + one enemy type spawning in waves + juicy hit feedback is alrea
 ---
 
 ## Sources
+
 - MDN — 2D collision detection (circle/AABB): https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
 - Red Blob Games — 2D visibility, grids, pathfinding, and vector math: https://www.redblobgames.com/
 - Steering Behaviors (Reynolds — seek/flee/separation), classic reference: https://www.red3d.com/cwr/steer/

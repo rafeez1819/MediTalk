@@ -1,12 +1,13 @@
 # Genre Playbook — First-Person Shooter (FPS)
 
-How to build a browser FPS that *feels* right (fast, snappy, weighty) and avoids the classic bugs. Assumes Three.js/Babylon.js. Read `../threejs-foundational.md` first — this file only adds FPS-specific rules (it already covers pointer lock + WASD basics, delta time, disposal, draw calls).
+How to build a browser FPS that _feels_ right (fast, snappy, weighty) and avoids the classic bugs. Assumes Three.js/Babylon.js. Read `../threejs-foundational.md` first — this file only adds FPS-specific rules (it already covers pointer lock + WASD basics, delta time, disposal, draw calls).
 
 ---
 
 ## 1. Core mechanics (minimal-but-good scope for a demo)
 
 A convincing FPS demo needs, in priority order:
+
 1. **Mouse-look + WASD movement** with pointer lock (yaw/pitch, clamped pitch).
 2. **One weapon that shoots** with a crosshair, muzzle flash, and hit feedback.
 3. **Something to shoot** — 3–8 targets or simple enemies with a hit reaction + death.
@@ -23,7 +24,7 @@ Do NOT try to ship AI pathfinding, multiple weapons with full inventory UI, relo
 - **Read `movementX`/`movementY` on `mousemove`, not `clientX/Y`.** While locked, `clientX/Y` are frozen; only the deltas update. `yaw -= movementX * sensitivity; pitch -= movementY * sensitivity`.
 - **Clamp pitch to just under ±90°** (`±89°`, i.e. `Math.PI/2 - 0.01`) so the camera never flips/gimbal-locks looking straight up/down.
 - **Yaw the body (a container), pitch the camera.** Standard rig: a yaw `Object3D` holding the camera; apply yaw to the container, pitch to the camera. Movement (`moveForward/moveRight`) uses body yaw only — never pitch — so looking up doesn't make you fly.
-- **Sensitivity + optional ADS zoom:** store a base sensitivity; when aiming-down-sights, lower FOV *and* scale sensitivity down proportionally so aim feels consistent.
+- **Sensitivity + optional ADS zoom:** store a base sensitivity; when aiming-down-sights, lower FOV _and_ scale sensitivity down proportionally so aim feels consistent.
 - **Add ESC-to-unlock** and pause. Only re-attach the `mousemove` handler while locked; detach on unlock so a paused game doesn't rotate.
 - **Movement feel:** acceleration + friction (not instant velocity), add sprint (Shift), crouch, and subtle **head-bob** driven by a sin wave of distance traveled (disable when idle). Optional: coyote-style step-up for small ledges. Air control should be reduced vs ground.
 - **FOV:** 75–90° vertical feels good for FPS; too low feels claustrophobic, too high distorts. Let the player adjust.
@@ -33,15 +34,18 @@ Do NOT try to ship AI pathfinding, multiple weapons with full inventory UI, relo
 ## 3. Weapon handling & the viewmodel
 
 ### ⚠️ Do NOT use a generated PHOTO as the weapon viewmodel.
-The single most common failure mode: the builder generates an **opaque JPG/PNG photo of a gun** and slaps it as a flat sprite/plane in the bottom-right of a 3D scene. It looks *wrong* — no parallax, wrong perspective, a hard rectangular edge, lighting that doesn't match the world, and it z-fights or clips into walls. **The world is 3D; the gun must be 3D too.**
+
+The single most common failure mode: the builder generates an **opaque JPG/PNG photo of a gun** and slaps it as a flat sprite/plane in the bottom-right of a 3D scene. It looks _wrong_ — no parallax, wrong perspective, a hard rectangular edge, lighting that doesn't match the world, and it z-fights or clips into walls. **The world is 3D; the gun must be 3D too.**
 
 **Instead:**
+
 - **Build the viewmodel from 3D geometry/code** — a few boxes/cylinders (`BoxGeometry`, `CylinderGeometry`) assembled into a low-poly gun, or a proper **glTF/GLB model** (right-handed, Y-up; verify +Z-forward orientation). Even a crude boxy gun made of primitives reads far better than a photo because it has real perspective and lighting.
 - **Parent the viewmodel to the camera** (add it as a child of the camera, offset to e.g. `(0.3, -0.3, -0.6)`) so it tracks the view. Because the camera's local forward is **−Z**, the gun sits at negative Z in front of the camera.
 - **Render it so it never clips into walls.** Two robust options: (a) a **separate overlay scene + second camera** rendered after the main scene with `renderer.autoClear=false` and `renderer.clearDepth()` between passes, or (b) put the viewmodel on its own **layer** with a dedicated camera. This guarantees the gun draws on top and never intersects level geometry.
 - If you must use a texture, it must be a **transparent PNG on correctly-perspectived geometry**, never a raw opaque photo on a screen-aligned quad.
 
 ### Shooting model
+
 - **Hitscan (raycast) for fast bullets** (pistols/rifles): on fire, `raycaster.setFromCamera({x:0,y:0}, camera)` (center of screen = crosshair) and `intersectObjects(targets)`. Take the nearest hit; apply damage. Instant, cheap, and what most shooters use.
 - **Projectiles for slow/arcing shots** (rockets, grenades): spawn a pooled mesh, move by velocity·delta, integrate gravity, and sweep-test for collisions (avoid tunneling — see bugs).
 - **Fire rate:** gate with a cooldown timer (`if (now - lastShot < fireInterval) return`), not per-frame or per-mousedown-event alone. Support hold-to-fire for automatics via a boolean set on mousedown/up.
@@ -53,6 +57,7 @@ The single most common failure mode: the builder generates an **opaque JPG/PNG p
 ## 4. Genre-specific "feel" (the juice)
 
 FPS feel is almost entirely feedback and responsiveness:
+
 - **Muzzle flash** (a brief additive sprite/light at the barrel, 1–2 frames), **shell/particle**, and a **tracer** for projectiles.
 - **Screen shake** on fire and on taking damage (small, decaying camera offset).
 - **Hitmarker** (crosshair flashes / an X appears) + **hit sound** the instant a shot lands — the game must confirm every hit.
@@ -95,6 +100,7 @@ Concrete rules to apply:
 ---
 
 ## Sources
+
 - MDN — Pointer Lock API: https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API
 - MDN — `Element.requestPointerLock()` (options, `unadjustedMovement`, Promise): https://developer.mozilla.org/en-US/docs/Web/API/Element/requestPointerLock
 - MDN — pointer lock live demo: https://mdn.github.io/dom-examples/pointer-lock/

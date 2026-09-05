@@ -13,9 +13,7 @@ function visitText(v: Visit) {
     `MediTalk visit · ${formatTime(v.startedAt)}`,
     `${langName(v.myLang)} ↔ ${langName(v.theirLang)} · ${v.role}`,
     "",
-    ...v.messages.map(
-      (m) => `${m.source}\n${m.translation}${m.plain ? `\n(${m.plain})` : ""}`,
-    ),
+    ...v.messages.map((m) => `${m.source}\n${m.translation}${m.plain ? `\n(${m.plain})` : ""}`),
   ];
   return lines.join("\n\n");
 }

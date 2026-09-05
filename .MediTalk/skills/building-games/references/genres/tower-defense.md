@@ -76,6 +76,7 @@ One tower type, one enemy type, a fixed path, 5–10 escalating waves, gold, and
 ---
 
 ## Sources
+
 - Red Blob Games — Introduction to A* / pathfinding (the canonical grid pathfinding reference): https://www.redblobgames.com/pathfinding/a-star/introduction.html
 - Red Blob Games — Grids, hexagons, and tile math: https://www.redblobgames.com/grids/
 - MDN — 2D collision / distance checks: https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection

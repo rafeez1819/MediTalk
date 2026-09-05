@@ -39,7 +39,7 @@ Flat world + walk + place/break + 3–4 block types is already recognizably "Min
 
 - **Use a grid-DDA voxel traversal (Amanatides & Woo), not `Raycaster.intersectObjects` against block meshes.** Step the ray cell-by-cell through the voxel grid: track `tMax`/`tDelta` per axis, advance to whichever axis boundary is nearest, and check the block at each visited cell until you hit a solid block or reach max distance. This is exact, cheap, and independent of how the mesh is built.
 - **Break:** set the hit cell to empty; rebuild that chunk's mesh (and any neighbor chunk if the block was on a border).
-- **Place:** place the new block in the cell **adjacent to the hit face** — you must track *which face* you crossed to enter the solid cell (the last step axis + direction gives the face normal). Place at `hitCell + faceNormal`. Reject placement if that cell is non-empty or overlaps the player's AABB (don't let the player entomb themselves).
+- **Place:** place the new block in the cell **adjacent to the hit face** — you must track _which face_ you crossed to enter the solid cell (the last step axis + direction gives the face normal). Place at `hitCell + faceNormal`. Reject placement if that cell is non-empty or overlaps the player's AABB (don't let the player entomb themselves).
 - **Highlight** the targeted block/face (wireframe or overlay) so the player sees what they'll hit.
 
 ---
@@ -80,6 +80,7 @@ Flat world + walk + place/break + 3–4 block types is already recognizably "Min
 ---
 
 ## Sources
+
 - 0fps.net — "Meshing in a Minecraft Game" (greedy meshing, part 1): https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
 - 0fps.net — "Meshing in a Minecraft Game" (part 2, texturing/AO trade-offs): https://0fps.net/2012/07/07/meshing-minecraft-part-2/
 - Amanatides & Woo — "A Fast Voxel Traversal Algorithm for Ray Tracing" (grid-DDA block picking): http://www.cse.yorku.ca/~amana/research/grid.pdf

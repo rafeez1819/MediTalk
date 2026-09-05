@@ -26,8 +26,18 @@ function Face({ value, active }: { value: number; active: boolean }) {
         stroke="var(--color-line)"
         strokeWidth="1.5"
       />
-      <circle cx="17" cy="21" r="2.2" fill={active ? "var(--color-accent-fg)" : "var(--color-ink)"} />
-      <circle cx="31" cy="21" r="2.2" fill={active ? "var(--color-accent-fg)" : "var(--color-ink)"} />
+      <circle
+        cx="17"
+        cy="21"
+        r="2.2"
+        fill={active ? "var(--color-accent-fg)" : "var(--color-ink)"}
+      />
+      <circle
+        cx="31"
+        cy="21"
+        r="2.2"
+        fill={active ? "var(--color-accent-fg)" : "var(--color-ink)"}
+      />
       <path
         d={mouth}
         fill="none"

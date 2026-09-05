@@ -73,7 +73,6 @@ const signalSchema = z.object({
 const leaveSchema = z.object({ op: z.literal("leave"), room: ID, peer: ID });
 const postSchema = z.discriminatedUnion("op", [signalSchema, leaveSchema]);
 
-
 const PEER_TTL_SECONDS = 30;
 const SIGNAL_TTL_SECONDS = 60;
 
@@ -254,7 +253,6 @@ export async function handleSignaling(request: Request): Promise<Response> {
 ```
 
 ## Mount the API route
-
 
 ```ts
 // src/routes/api/rtc.ts

@@ -16,13 +16,13 @@ user-invocable: false
 
 ## App-builder / Grok environment
 
-| Item | Value |
-| --- | --- |
-| Skill dir / scripts | `.grok/skills/generate2dmap/`, run as `python3 .grok/skills/generate2dmap/scripts/<script>.py …` |
-| Image tools | `imagine_text_to_image` / `imagine_image_to_image` (path-based; see **`imagine`**); inspect output with `read_file` on the PNG path (not Codex view_image) |
-| Generated image path | `imagine_text_to_image` → sandbox `file_path` → copy into `assets/map/`; Pillow is preinstalled |
-| Default `engine_target` | `raw_canvas` or `Phaser` for this TanStack browser sandbox — only use Godot/Unity/Tiled when the user explicitly wants those exports |
-| Related skills | **`generate2dsprite`** (character/FX sprites; prop packs still use this skill's extract script), **`building-games`**, **`imagine`** |
+| Item                    | Value                                                                                                                                                      |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Skill dir / scripts     | `.grok/skills/generate2dmap/`, run as `python3 .grok/skills/generate2dmap/scripts/<script>.py …`                                                           |
+| Image tools             | `imagine_text_to_image` / `imagine_image_to_image` (path-based; see **`imagine`**); inspect output with `read_file` on the PNG path (not Codex view_image) |
+| Generated image path    | `imagine_text_to_image` → sandbox `file_path` → copy into `assets/map/`; Pillow is preinstalled                                                            |
+| Default `engine_target` | `raw_canvas` or `Phaser` for this TanStack browser sandbox — only use Godot/Unity/Tiled when the user explicitly wants those exports                       |
+| Related skills          | **`generate2dsprite`** (character/FX sprites; prop packs still use this skill's extract script), **`building-games`**, **`imagine`**                       |
 
 ## Decide the pipeline first
 

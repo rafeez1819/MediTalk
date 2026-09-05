@@ -19,15 +19,15 @@ Convert a **base 2D character image** into **dense animation sprites** using Gro
 
 ## App-builder / Grok environment
 
-| Item | Value |
-| --- | --- |
-| Skill dir | `.grok/skills/video2dsprite/` |
-| Scripts | `python3 .grok/skills/video2dsprite/scripts/video2dsprite.py …` |
-| Video tools | `imagine_image_to_video` — animate one base `file_path` (verify present) |
-| Inspect | `read_file` on stills/frames; report paths for videos |
-| Deps | ffmpeg + Pillow + numpy (preinstalled in app-builder image) |
-| Output home | `assets/sprites/video2dsprite/<name>/` under `/workspace` |
-| Default | Prefer **`generate2dsprite`** for production heroes; this is the denser-motion path |
+| Item        | Value                                                                               |
+| ----------- | ----------------------------------------------------------------------------------- |
+| Skill dir   | `.grok/skills/video2dsprite/`                                                       |
+| Scripts     | `python3 .grok/skills/video2dsprite/scripts/video2dsprite.py …`                     |
+| Video tools | `imagine_image_to_video` — animate one base `file_path` (verify present)            |
+| Inspect     | `read_file` on stills/frames; report paths for videos                               |
+| Deps        | ffmpeg + Pillow + numpy (preinstalled in app-builder image)                         |
+| Output home | `assets/sprites/video2dsprite/<name>/` under `/workspace`                           |
+| Default     | Prefer **`generate2dsprite`** for production heroes; this is the denser-motion path |
 
 ```text
 base still → imagine_image_to_video (in-place motion) → extract frames → chroma key → sample/normalize → strip / grid / GIF
@@ -35,9 +35,9 @@ base still → imagine_image_to_video (in-place motion) → extract frames → c
 
 ## Platform gate (read first)
 
-| Runtime | Supported? |
-| --- | --- |
-| **Grok Build** (xAI) | **Yes** — requires an image generator + an image→video tool |
+| Runtime                       | Supported?                                                                                                             |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Grok Build** (xAI)          | **Yes** — requires an image generator + an image→video tool                                                            |
 | Codex / Claude / other agents | **No** — they lack Grok video tools. Tell the user this skill is Grok Build only and offer `$generate2dsprite` instead |
 
 **Gate on the capability, not the exact tool name.** Image generation appears
@@ -48,11 +48,11 @@ code-drawn frames.
 
 This skill is an **optional denser-motion path**. It does **not** replace `$generate2dsprite`:
 
-| Use `$generate2dsprite` when… | Use `$video2dsprite` when… |
-| --- | --- |
+| Use `$generate2dsprite` when…                             | Use `$video2dsprite` when…                                    |
+| --------------------------------------------------------- | ------------------------------------------------------------- |
 | Crisp pixel sheets, fixed grids, identity-critical heroes | User wants denser intermediate poses / smoother feeling loops |
-| Attack/cast body sheets, prop packs, engine atlases | Experimenting with video-sourced run/walk/idle motion |
-| Production default for most game sprites | User explicitly asks for video → frames → sprites |
+| Attack/cast body sheets, prop packs, engine atlases       | Experimenting with video-sourced run/walk/idle motion         |
+| Production default for most game sprites                  | User explicitly asks for video → frames → sprites             |
 
 Video softens pixels, drifts identity, and leaves chroma fringes. Always QC; for production heroes, prefer `$generate2dsprite` unless the user wants the video look.
 

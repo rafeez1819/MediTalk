@@ -39,8 +39,8 @@ The key unlocks the **full API surface**, not just chat:
 
 ## Env vars — do **not** create a `.env` file
 
-| Var | Where | Purpose |
-|---|---|---|
+| Var           | Where  | Purpose                                                                                       |
+| ------------- | ------ | --------------------------------------------------------------------------------------------- |
 | `XAI_API_KEY` | server | Injected by the platform (preview and deploy). Never write, hardcode, or ask the user for it. |
 
 The key is **server-only**: read it with `process.env.XAI_API_KEY` inside
@@ -96,8 +96,8 @@ For streaming, structured outputs, vision, or the full model list, follow
 
 The same key drives **runtime** image/video features in the app (user avatars,
 scene art, generated content). Distinct from your build-time `imagine_text_to_image` / `imagine_image_to_image` / `imagine_image_to_video` tools (the
-`imagine` skill): use the **API** when the *running app* generates media, the
-tools when *you* create static assets while building.
+`imagine` skill): use the **API** when the _running app_ generates media, the
+tools when _you_ create static assets while building.
 
 ```ts
 // POST https://api.x.ai/v1/images/generations — same auth header as chat
@@ -105,7 +105,7 @@ body: JSON.stringify({
   model: "grok-imagine-image-quality", // or "grok-imagine-image" (cheaper)
   prompt: data.prompt,
   // n (≤10), resolution ("1k"|"2k"), response_format ("url"|"b64_json")
-})
+});
 // → body.data[0].url
 ```
 
@@ -122,7 +122,7 @@ accessibility, character voices:
 
 ```ts
 // Same Authorization header; returns audio bytes (e.g. MP3)
-body: JSON.stringify({ text: data.text, voice_id: "eve" }) // eve = default voice
+body: JSON.stringify({ text: data.text, voice_id: "eve" }); // eve = default voice
 ```
 
 List voices at `GET /v1/tts/voices` (custom voices supported); transcription

@@ -21,6 +21,7 @@ UI** — pages, chrome, HUD, menus, forms. (For a 3D game's gameplay canvas, see
 the `building-games` skill; this skill governs the DOM UI layered over it.)
 
 **Read `references/` for depth** (loaded on demand — don't inline it all):
+
 - `references/refined-ui.md` — the full product-chrome/overlay design system.
 - `references/typography.md` — type scale, pairing, rhythm.
 - `references/surfaces.md` — elevation, borders, shadows, layering.
@@ -39,10 +40,14 @@ Define the system once, then compose from it. **Never** sprinkle ad-hoc values.
   ```css
   @import "tailwindcss";
   @theme {
-    --color-bg: #0b0b0f;      --color-surface: #16161d;
-    --color-fg: #e7e7ea;      --color-muted: #a0a0ab;
-    --color-primary: #14b8a6; --color-border: #26262f;
-    --radius: 0.75rem;        --font-sans: "Inter", system-ui, sans-serif;
+    --color-bg: #0b0b0f;
+    --color-surface: #16161d;
+    --color-fg: #e7e7ea;
+    --color-muted: #a0a0ab;
+    --color-primary: #14b8a6;
+    --color-border: #26262f;
+    --radius: 0.75rem;
+    --font-sans: "Inter", system-ui, sans-serif;
   }
   ```
 - **Use shadcn/ui components** (Radix primitives + `cva` variants + `tailwind-merge`)
@@ -54,7 +59,9 @@ Define the system once, then compose from it. **Never** sprinkle ad-hoc values.
   ```css
   @layer base {
     button:not(:disabled),
-    [role="button"]:not(:disabled) { cursor: pointer; }
+    [role="button"]:not(:disabled) {
+      cursor: pointer;
+    }
   }
   ```
 - **Ban ad-hoc styling:** no raw hex in JSX, no `text-white`/`bg-black` literals,
@@ -113,6 +120,7 @@ out of the pointer-lock/gameplay input path.
 ---
 
 ## Finish checklist (before you call UI done)
+
 - Tokens defined in `@theme`; no ad-hoc hex / arbitrary values in JSX.
 - ≤ 5 colors, ≤ 2 fonts, consistent spacing scale.
 - Contrast holds; foreground overridden wherever background is.

@@ -20,15 +20,15 @@ Grok Build uses the **split Imagine computer stack** (`grok_computer` variants).
 There is **no** consolidated `imagine_image` or `imagine_video` tool — always
 call the modality-specific name from the table below.
 
-| Tool | Role |
-|------|------|
-| `imagine_text_to_image` | New image from a text prompt only (no source). |
-| `imagine_image_to_image` | Edit / restyle **one** existing image (sandbox path). |
-| `imagine_reference_to_image` | Combine **2+** reference images (sandbox paths). |
-| `imagine_text_to_video` | New video from a text prompt only (no source). |
-| `imagine_image_to_video` | Animate **one** still (sandbox path) into a video. |
-| `imagine_reference_to_video` | Video from **1+** reference images (sandbox paths). |
-| `render_file` | Show a sandbox image/video path to the user in chat. |
+| Tool                         | Role                                                  |
+| ---------------------------- | ----------------------------------------------------- |
+| `imagine_text_to_image`      | New image from a text prompt only (no source).        |
+| `imagine_image_to_image`     | Edit / restyle **one** existing image (sandbox path). |
+| `imagine_reference_to_image` | Combine **2+** reference images (sandbox paths).      |
+| `imagine_text_to_video`      | New video from a text prompt only (no source).        |
+| `imagine_image_to_video`     | Animate **one** still (sandbox path) into a video.    |
+| `imagine_reference_to_video` | Video from **1+** reference images (sandbox paths).   |
+| `render_file`                | Show a sandbox image/video path to the user in chat.  |
 
 **Path-based handles.** These tools read/write the shared sandbox:
 
@@ -60,7 +60,7 @@ edit / animate → pass prior file_path(s) into image_to_* / reference_to_*
 
 When the output must get specific text, numbers, data, or structure right, don't trust the first result - verify it in a loop:
 
-1. Produce the result (generate, or per *Build accurate visuals with code*, construct it in code).
+1. Produce the result (generate, or per _Build accurate visuals with code_, construct it in code).
 2. Inspect the actual output - use `read_file` (image understanding) on the result path - and confirm every word, number, label, and structural detail matches the requirement, and that nothing overlaps, clips, or runs off-canvas.
 3. If anything is wrong, fix and re-verify:
    - Garbled text, invented numbers, or broken layout from an image model? Don't just re-prompt - it will likely garble it again. Rebuild it with code.
@@ -81,19 +81,19 @@ When the output must get specific text, numbers, data, or structure right, don't
 
 ## Choosing the tool
 
-| Situation | Call |
-|-----------|------|
-| New image, no source | `imagine_text_to_image` with `prompt` (+ `aspect_ratio`) |
-| Edit / restyle / recolor one existing image | `imagine_image_to_image` with `prompt` + source path |
-| Combine 2+ reference images into one | `imagine_reference_to_image` with `prompt` + source paths |
-| Iterate on a previous result | `imagine_image_to_image` with prior path |
-| Named real person or group | `imagine_image_to_image` with a real reference path after web search |
-| Generic / invented subject from scratch | `imagine_text_to_image` |
-| New video, no source | `imagine_text_to_video` with `prompt` |
-| Animate one still | `imagine_image_to_video` with that still's path |
-| Multi-ref video | `imagine_reference_to_video` with image path(s) |
+| Situation                                   | Call                                                                 |
+| ------------------------------------------- | -------------------------------------------------------------------- |
+| New image, no source                        | `imagine_text_to_image` with `prompt` (+ `aspect_ratio`)             |
+| Edit / restyle / recolor one existing image | `imagine_image_to_image` with `prompt` + source path                 |
+| Combine 2+ reference images into one        | `imagine_reference_to_image` with `prompt` + source paths            |
+| Iterate on a previous result                | `imagine_image_to_image` with prior path                             |
+| Named real person or group                  | `imagine_image_to_image` with a real reference path after web search |
+| Generic / invented subject from scratch     | `imagine_text_to_image`                                              |
+| New video, no source                        | `imagine_text_to_video` with `prompt`                                |
+| Animate one still                           | `imagine_image_to_video` with that still's path                      |
+| Multi-ref video                             | `imagine_reference_to_video` with image path(s)                      |
 
-Rule of thumb: **no refs → text_to_*; one ref → image_to_*; 2+ refs → reference_to_*.**
+Rule of thumb: **no refs → text_to__; one ref → image_to__; 2+ refs → reference_to\_*.**
 
 ## `imagine_text_to_image`
 

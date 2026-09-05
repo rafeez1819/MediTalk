@@ -74,6 +74,7 @@ One lane setup + jump/slide + one obstacle type + coins + a speed ramp + hi-scor
 ---
 
 ## Sources
+
 - MDN — 2D collision detection & game techniques: https://developer.mozilla.org/en-US/docs/Games/Techniques
 - Phaser — Groups / object pooling (recycle sprites): https://docs.phaser.io/phaser/concepts/gameobjects/group
 - Phaser — TileSprite (scrolling ground/parallax): https://docs.phaser.io/api-documentation/class/gameobjects-tilesprite

@@ -25,8 +25,8 @@
 `@/lib/auth/use-current-user` (with auth on these reflect the REAL session, so a
 preview visitor is signed out until they sign in):
 
-- `useCurrentUser()` → `AppUser | null` — for display. `null` means *loading OR
-  signed out*, so never redirect on it alone.
+- `useCurrentUser()` → `AppUser | null` — for display. `null` means _loading OR
+  signed out_, so never redirect on it alone.
 - `useCurrentUserState()` → `{ user, isPending }` — for guards: wait for
   `isPending` to clear before treating `user: null` as signed out, or a hard
   reload bounces signed-in users to sign-in.
@@ -47,15 +47,19 @@ function Navbar() {
   return (
     <>
       <span>{user?.displayName ?? "Guest"}</span>
-      <SignedOut><a href="/login">Sign in</a></SignedOut>
-      <SignedIn><UserButton /></SignedIn>
+      <SignedOut>
+        <a href="/login">Sign in</a>
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
     </>
   );
 }
 
 function AccountPage() {
   const { user, isPending } = useCurrentUserState();
-  if (isPending) return null;             // session still resolving
+  if (isPending) return null; // session still resolving
   if (!user) return <RedirectToSignIn />; // client-side Navigate — not window.location
   return <h1>Welcome, {user.displayName}</h1>;
 }

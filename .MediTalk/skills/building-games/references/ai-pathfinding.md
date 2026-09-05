@@ -9,6 +9,7 @@ Consolidated from Red Blob Games (the canonical A*/grid reference), Craig Reynol
 **A\*** finds the shortest path by expanding the node that minimizes `f = g + h`, where `g` = cost so far and `h` = heuristic estimate to goal. It's Dijkstra + a goal-directed heuristic.
 
 Rules:
+
 - **Heuristic must be admissible** (never overestimate true cost) or A* may return a non-optimal path.
   - **4-directional grid → Manhattan distance** `|dx|+|dy|`.
   - **8-directional grid → octile/Chebyshev distance** (diagonal cost ≈ 1.414). Using Manhattan on an 8-dir grid overestimates → wrong paths; using Euclidean on a 4-dir grid underestimates → slow.
@@ -19,7 +20,8 @@ Rules:
 - **Reconstruct the path** by following `cameFrom` parents from goal back to start, then reverse.
 
 Related tools (Red Blob Games):
-- **Breadth-First Search / Dijkstra maps ("flow fields"):** when *many* agents chase *one* goal (tower defense, RTS), compute one BFS/Dijkstra field from the goal and have every agent follow the gradient — far cheaper than one A* per agent.
+
+- **Breadth-First Search / Dijkstra maps ("flow fields"):** when _many_ agents chase _one_ goal (tower defense, RTS), compute one BFS/Dijkstra field from the goal and have every agent follow the gradient — far cheaper than one A* per agent.
 - **Greedy Best-First** is faster but not optimal; A* is the balanced default.
 - **JPS (Jump Point Search)** optimizes A* on uniform-cost grids.
 
@@ -31,10 +33,11 @@ Libraries: **PathFinding.js** (grid A*/JPS/BFS, easy), or roll your own for cont
 
 ## 2. Steering behaviors (smooth local movement)
 
-A* gives *where* to go; **steering** (Craig Reynolds) makes agents *move there naturally* by accumulating steering forces on velocity:
+A* gives _where_ to go; **steering** (Craig Reynolds) makes agents _move there naturally_ by accumulating steering forces on velocity:
+
 - **Seek / Arrive** — move toward a target; Arrive decelerates within a slowing radius (prevents overshoot/orbit).
 - **Flee / Evade** — away from a threat.
-- **Pursuit** — seek the target's *predicted future* position.
+- **Pursuit** — seek the target's _predicted future_ position.
 - **Wander** — smooth random roaming (jitter a point on a circle ahead), not teleporting random targets.
 - **Obstacle avoidance** — steer around obstacles detected by a look-ahead feeler.
 - **Separation / Alignment / Cohesion** = **Flocking (boids)** for crowds/schools/swarms.
@@ -56,6 +59,7 @@ Rules: **combine forces** (weighted sum or priority), **clamp to max force and m
 ## 4. Behavior Trees (BT) — scalable decision-making
 
 When FSMs get unwieldy, use a **behavior tree**: a tree of nodes evaluated each tick, each returning **Success / Failure / Running**.
+
 - **Composites:** **Sequence** (run children in order, fail-fast — "AND"), **Selector/Fallback** (try children until one succeeds — "OR"), **Parallel**.
 - **Decorators:** Inverter, Repeat, Cooldown, Succeeder, condition guards.
 - **Leaves:** Actions (MoveTo, Attack, Reload) and Conditions (IsPlayerVisible, HasAmmo).
@@ -77,7 +81,8 @@ When FSMs get unwieldy, use a **behavior tree**: a tree of nodes evaluated each 
 ---
 
 ## 6. Performance & correctness rules
-- **Don't A* every agent every frame.** Cache paths; recompute on target movement or a throttled interval; **time-slice** pathfinding across frames or use a **web worker** for big searches so the main thread doesn't hitch.
+
+- _*Don't A* every agent every frame._* Cache paths; recompute on target movement or a throttled interval; **time-slice** pathfinding across frames or use a **web worker** for big searches so the main thread doesn't hitch.
 - **Flow field / Dijkstra map** when many agents share one goal — one computation for all.
 - **Binary heap** open set, **typed arrays** for large grids, reuse buffers (no per-search allocation churn).
 - **Run AI on a fixed timestep** (decoupled from render) for determinism/netcode; often at a lower rate than render (e.g. 10–20Hz for decisions) with steering interpolating between.
@@ -87,9 +92,10 @@ When FSMs get unwieldy, use a **behavior tree**: a tree of nodes evaluated each 
 ---
 
 ## 7. Bug-prevention checklist
+
 - **Non-admissible heuristic** (Euclidean on 4-dir, Manhattan on 8-dir) → non-optimal or slow paths; match heuristic to movement.
 - **Linear open-set scan** → severe stutter on big maps; use a binary heap.
-- **A* per agent per frame** → frame drops; cache/throttle/flow-field/worker.
+- _*A* per agent per frame_* → frame drops; cache/throttle/flow-field/worker.
 - **Following raw grid path** → robotic zig-zag; smooth/string-pull and add steering.
 - **No Arrive/slowing radius** → agents overshoot and orbit the target.
 - **Corner-cutting diagonals** → agents clip through wall corners; forbid unsafe diagonals.
@@ -102,6 +108,7 @@ When FSMs get unwieldy, use a **behavior tree**: a tree of nodes evaluated each 
 ---
 
 ## Defaults to apply
+
 - **Default AI stack:** **A\* on a grid** (binary-heap open set, movement-matched heuristic, weighted tiles) for "where," **steering behaviors** (seek/arrive/avoid/separation) for smooth "how," and an **FSM for simple enemies / behavior tree for complex NPCs** for "what to do."
 - **Use flow fields (BFS/Dijkstra map) when many agents chase one target** (tower defense/RTS) — big perf win over per-agent A*.
 - **For 3D/open worlds, generate navmeshes via recast-navigation-js**; smooth paths with the funnel algorithm.
@@ -110,6 +117,7 @@ When FSMs get unwieldy, use a **behavior tree**: a tree of nodes evaluated each 
 ---
 
 ## Sources
+
 - Red Blob Games — Introduction to A* (canonical, interactive): https://www.redblobgames.com/pathfinding/a-star/introduction.html ; A* Implementation Guide: https://www.redblobgames.com/pathfinding/a-star/implementation.html
 - Red Blob Games — Grids/heuristics & "Pathfinding for Tower Defense" (flow fields): https://www.redblobgames.com/pathfinding/tower-defense/ ; grid pathfinding tricks: https://www.redblobgames.com/pathfinding/grids/algorithms.html
 - Craig Reynolds — "Steering Behaviors For Autonomous Characters": https://www.red3d.com/cwr/steer/ ; Boids: https://www.red3d.com/cwr/boids/

@@ -1,11 +1,6 @@
 export function MediMark({ className = "size-9" }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 48 48"
-      className={className}
-      aria-hidden="true"
-      fill="none"
-    >
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true" fill="none">
       <rect width="48" height="48" rx="12" fill="currentColor" />
       <path
         d="M24 12v24M16 20h16"

@@ -162,9 +162,7 @@ function TalkPage() {
           <p className="font-heading text-2xl leading-snug sm:text-3xl">
             {last?.translation ?? "A translation will appear here in their language."}
           </p>
-          {last?.plain ? (
-            <p className="mt-2 text-sm text-muted">{last.plain}</p>
-          ) : null}
+          {last?.plain ? <p className="mt-2 text-sm text-muted">{last.plain}</p> : null}
         </section>
 
         <div ref={listRef} className="max-h-56 space-y-2 overflow-y-auto">
@@ -330,10 +328,7 @@ function TalkPage() {
               <X className="size-5" />
             </Button>
           </div>
-          <div
-            className="flex flex-1 items-center justify-center px-6 pb-16"
-            dir={theirMeta.dir}
-          >
+          <div className="flex flex-1 items-center justify-center px-6 pb-16" dir={theirMeta.dir}>
             <p className="max-w-2xl text-center font-heading text-4xl leading-tight sm:text-5xl">
               {handoff}
             </p>

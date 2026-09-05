@@ -7,11 +7,12 @@ Consolidated from MDN (Gamepad API, Pointer Events, KeyboardEvent) and fighting/
 ## 1. Architecture: one action layer over all devices
 
 **Never scatter `if (keys.KeyW)` gameplay checks through your code.** Build two layers:
+
 1. **Raw device state** — updated from events (keyboard/pointer) and polling (gamepad).
 2. **Abstract actions** — a fixed set like `moveX`, `moveY`, `aimX`, `jump`, `attack`, `pause`. Gameplay reads only actions. Any device can drive any action → keyboard, touch, and gamepad all "just work," and rebinding is trivial.
 
 ```js
-const actions = { moveX:0, moveY:0, jump:false, attack:false /* ... */ };
+const actions = { moveX: 0, moveY: 0, jump: false, attack: false /* ... */ };
 ```
 
 Compute actions once per frame in an `updateInput()` called at the top of the loop, then gameplay consumes `actions` (and derived `justPressed` edges).
@@ -28,9 +29,12 @@ Compute actions once per frame in an `updateInput()` called at the top of the lo
 
 ```js
 const keys = new Set();
-addEventListener('keydown', e => { keys.add(e.code); if (GAME_KEYS.has(e.code)) e.preventDefault(); });
-addEventListener('keyup',   e => keys.delete(e.code));
-addEventListener('blur',    () => keys.clear());
+addEventListener("keydown", (e) => {
+  keys.add(e.code);
+  if (GAME_KEYS.has(e.code)) e.preventDefault();
+});
+addEventListener("keyup", (e) => keys.delete(e.code));
+addEventListener("blur", () => keys.clear());
 ```
 
 ---
@@ -66,17 +70,20 @@ addEventListener('blur',    () => keys.clear());
 - Haptics via `gamepad.vibrationActuator?.playEffect('dual-rumble', {...})` where supported (progressive enhancement).
 
 ### Deadzones (required for analog sticks)
+
 Sticks never rest at exactly 0. Apply a deadzone or you get drift ("character walks by itself").
+
 - **Radial deadzone** (correct for sticks — treat X/Y together, not per-axis) with re-normalization so full tilt still reaches magnitude 1:
 
 ```js
 function radialDeadzone(x, y, dz = 0.15) {
   const m = Math.hypot(x, y);
   if (m < dz) return { x: 0, y: 0 };
-  const scale = ((m - dz) / (1 - dz)) / m; // re-normalize
+  const scale = (m - dz) / (1 - dz) / m; // re-normalize
   return { x: x * scale, y: y * scale };
 }
 ```
+
 - Typical deadzone 0.1–0.25. Also deadzone trigger `.value`. Per-axis deadzones make diagonals feel wrong — prefer radial.
 
 ---
@@ -85,7 +92,7 @@ function radialDeadzone(x, y, dz = 0.15) {
 
 - Store bindings as **data** (action → list of physical inputs): `{ jump: ['Space','KeyW', {pad:0}], attack: ['Mouse0', {pad:2}] }`. `updateInput()` resolves bindings into `actions`.
 - **Rebinding UI:** capture the next input event, write it into the binding table, persist to localStorage (see `save-persistence.md`). Detect and warn on conflicts.
-- Support **multiple simultaneous devices** and per-action multiple bindings (WASD *and* arrows *and* stick all drive `moveX`).
+- Support **multiple simultaneous devices** and per-action multiple bindings (WASD _and_ arrows _and_ stick all drive `moveX`).
 - Keep a **`justPressed` / `justReleased` edge set**: compare this frame's action booleans to last frame's for one-shot actions (jump, shoot, menu confirm). Reading level-triggered state for these causes repeat-fire bugs.
 
 ---
@@ -94,13 +101,14 @@ function radialDeadzone(x, y, dz = 0.15) {
 
 - **Buffer discrete actions for a short window** (~100–150ms / ~6–8 frames) so an input pressed slightly before it's actionable still fires. Essential for platformers and fighting games — makes controls feel "tight" instead of "eating" inputs.
   - E.g. jump pressed 4 frames before landing → still jump on landing.
-- **Coyote time:** allow jump for a few frames *after* walking off a ledge — pairs with jump buffering; both dramatically improve platformer feel.
+- **Coyote time:** allow jump for a few frames _after_ walking off a ledge — pairs with jump buffering; both dramatically improve platformer feel.
 - Store buffered inputs with a timestamp/frame stamp; consume when the action becomes valid, and expire after the window.
 - **Poll gamepad and sample input at a fixed rate tied to your fixed-timestep** update for deterministic gameplay/netcode; buffering + fixed step is what makes combos/prediction reproducible.
 
 ---
 
 ## 8. Bug-prevention checklist
+
 - **Movement in the keydown handler** → frame-rate-dependent, jerky; set flags, move in the loop with `dt`.
 - **Using `event.key`/`keyCode`** → breaks on non-US layouts / deprecated; use `event.code`.
 - **Stuck keys after tab-out** → clear key set on `blur`/`visibilitychange`.
@@ -116,6 +124,7 @@ function radialDeadzone(x, y, dz = 0.15) {
 ---
 
 ## Defaults to apply
+
 - **Always generate the two-layer input system**: raw devices → normalized `actions`, with `justPressed`/`justReleased` edges. Gameplay reads only actions, so keyboard+mouse, touch (nipplejs + buttons), and gamepad all work from one code path.
 - **Bake in the safety defaults**: `event.code`, clear keys on blur, poll gamepad each frame, radial deadzone (~0.15) with re-normalization, `touch-action:none`, handle `pointercancel`.
 - **Include jump/input buffering (~120ms) + coyote time** in platformers/action templates by default — biggest feel win for cheap.
@@ -128,6 +137,7 @@ function radialDeadzone(x, y, dz = 0.15) {
 ---
 
 ## Sources
+
 - MDN — Gamepad API: https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API ; Using the Gamepad API: https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API ; Implementing controls: https://developer.mozilla.org/en-US/docs/Games/Techniques/Controls_Gamepad_API
 - MDN — `Navigator.getGamepads()`: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/getGamepads ; `Gamepad` / `GamepadButton`: https://developer.mozilla.org/en-US/docs/Web/API/Gamepad
 - MDN — Pointer Events: https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events ; `touch-action`: https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action

@@ -1,6 +1,6 @@
 # Running the brand-asset pass (the pass's own contract)
 
-Read this when you *are* the pass — dispatched as the brand subagent, or
+Read this when you _are_ the pass — dispatched as the brand subagent, or
 building the assets inline because no `task` tool exists. The parent keeps
 building and never waits, so everything below is yours to get right unobserved.
 
@@ -26,7 +26,7 @@ node scripts/write-atomic.mjs /workspace/.grok/og.jpg.tmp public/og.jpg
 
 `src/lib/og/site.json` is the only file this pass writes under `src/`. Hand it
 over **once**, with the finished card — never a field at a time: its
-`"card": "custom"` flag has to land *with* the card and not before, because the
+`"card": "custom"` flag has to land _with_ the card and not before, because the
 bake trusts the flag on its own and would emit an `og:image` URL for a file that
 does not exist.
 

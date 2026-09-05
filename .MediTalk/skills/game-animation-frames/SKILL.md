@@ -26,12 +26,12 @@ This skill is **doctrine** (motion laws, loop QC, when to use video). In the
 app-builder sandbox, **do not** run a freeform `ffmpeg` harvest or invent a
 random keyable `#hex` background.
 
-| Step | Do this |
-| --- | --- |
-| Production sprites / fixed grids | **`generate2dsprite`** — solid **`#FF00FF`** magenta sheets + chroma scripts |
-| Denser locomotion from video | **`video2dsprite`** — base still on **`#FF00FF`** → `imagine_image_to_video` → skill scripts (ffmpeg + chroma) |
-| Keyable background | Always **`#FF00FF`** when using either pipeline (required for chroma) |
-| This skill | Loop / flip-test / motion laws below — apply after the pipeline runs |
+| Step                             | Do this                                                                                                        |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Production sprites / fixed grids | **`generate2dsprite`** — solid **`#FF00FF`** magenta sheets + chroma scripts                                   |
+| Denser locomotion from video     | **`video2dsprite`** — base still on **`#FF00FF`** → `imagine_image_to_video` → skill scripts (ffmpeg + chroma) |
+| Keyable background               | Always **`#FF00FF`** when using either pipeline (required for chroma)                                          |
+| This skill                       | Loop / flip-test / motion laws below — apply after the pipeline runs                                           |
 
 Open `.grok/skills/video2dsprite/SKILL.md` or `.grok/skills/generate2dsprite/SKILL.md`
 and follow their workflows for generation and postprocess. Then apply the

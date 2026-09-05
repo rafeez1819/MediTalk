@@ -10,7 +10,11 @@ This file assumes the general loop/orientation/perf rules and the short Babylon 
 
 ```js
 import { Engine, Scene, Vector3 } from "@babylonjs/core";
-const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: true, powerPreference: "high-performance" });
+const engine = new Engine(canvas, true, {
+  preserveDrawingBuffer: false,
+  stencil: true,
+  powerPreference: "high-performance",
+});
 const scene = new Scene(engine);
 engine.runRenderLoop(() => scene.render());
 window.addEventListener("resize", () => engine.resize());
@@ -31,10 +35,10 @@ import { WebGPUEngine, Engine } from "@babylonjs/core";
 async function createEngine(canvas) {
   if (await WebGPUEngine.IsSupportedAsync) {
     const e = new WebGPUEngine(canvas, { antialias: true });
-    await e.initAsync();            // REQUIRED before creating a Scene
+    await e.initAsync(); // REQUIRED before creating a Scene
     return e;
   }
-  return new Engine(canvas, true, { powerPreference: "high-performance" });   // WebGL2 fallback
+  return new Engine(canvas, true, { powerPreference: "high-performance" }); // WebGL2 fallback
 }
 ```
 
@@ -52,10 +56,11 @@ async function createEngine(canvas) {
 - **Keep `camera.maxZ` as small as practical** and `minZ` as large as practical — improves depth precision, culling, and overdraw.
 
 **Behaviors** attach polished motion for free (this is a Babylon differentiator):
+
 - **FramingBehavior** — auto-frames a target mesh nicely (`camera.useFramingBehavior = true`).
 - **BouncingBehavior** — soft bounce at radius limits.
 - **AutoRotationBehavior** — idle turntable spin (great for product/menu scenes).
-Enable via `camera.useAutoRotationBehavior = true` etc., then tune the behavior object.
+  Enable via `camera.useAutoRotationBehavior = true` etc., then tune the behavior object.
 
 ---
 
@@ -67,11 +72,16 @@ Havok is the recommended physics engine (WASM, fast, deterministic-ish). Use the
 import { HavokPlugin, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
 import HavokPhysics from "@babylonjs/havok";
 
-const havok = await HavokPhysics();                 // MUST await — loads the .wasm
+const havok = await HavokPhysics(); // MUST await — loads the .wasm
 scene.enablePhysics(new Vector3(0, -9.81, 0), new HavokPlugin(true, havok));
 
 // dynamic body:
-new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.6, friction: 0.5 }, scene);
+new PhysicsAggregate(
+  sphere,
+  PhysicsShapeType.SPHERE,
+  { mass: 1, restitution: 0.6, friction: 0.5 },
+  scene,
+);
 // static body: mass 0
 new PhysicsAggregate(ground, PhysicsShapeType.BOX, { mass: 0 }, scene);
 ```
@@ -125,6 +135,7 @@ For anything static, tell Babylon to stop recomputing it. This is the highest-le
 - **`scene.blockMaterialDirtyMechanism = true`** while bulk-creating materials to avoid repeated recompiles.
 
 Other big levers (deeper than the three.js file's bullets):
+
 - **`scene.performancePriority = ScenePerformancePriority.Intermediate` (or `Aggressive`)** — auto-applies a bundle of optimizations (freezes active meshes, skips some checks). `Aggressive` disables per-mesh picking/some features — verify nothing you need breaks.
 - **Thin instances** (`mesh.thinInstanceAdd(matrix)` / `thinInstanceSetBuffer`) for thousands of identical static objects → one draw call, cheaper than regular instances. Regular **instances** (`mesh.createInstance()`) when you need per-instance picking/parenting.
 - **`scene.autoClear = false`** (and `autoClearDepthAndStencil`) when the scene fully covers the viewport — skips the clear.
@@ -144,10 +155,12 @@ Instead of guessing settings per device, let Babylon degrade quality until it re
 ```js
 import { SceneOptimizer, SceneOptimizerOptions } from "@babylonjs/core";
 // preset tiers try progressively harder optimizations to reach the target FPS:
-SceneOptimizer.OptimizeAsync(scene,
-  SceneOptimizerOptions.HighDegradationAllowed(60),   // target 60 fps
+SceneOptimizer.OptimizeAsync(
+  scene,
+  SceneOptimizerOptions.HighDegradationAllowed(60), // target 60 fps
   () => console.log("reached target"),
-  () => console.log("could not reach target"));
+  () => console.log("could not reach target"),
+);
 ```
 
 - Presets: `LowDegradationAllowed`, `ModerateDegradationAllowed`, `HighDegradationAllowed(targetFps)`. They apply, in escalating order, optimizations like: reduce hardware scaling, merge meshes, disable shadows, reduce texture size, disable post-processes, cut particle counts.
@@ -190,6 +203,7 @@ SceneOptimizer.OptimizeAsync(scene,
 ---
 
 ## Sources
+
 - Babylon.js docs — Optimizing your scene (freeze APIs, autoClear, performancePriority, active meshes): https://doc.babylonjs.com/features/featuresDeepDive/scene/optimize_your_scene
 - Babylon.js docs — Physics V2 / Havok (`enablePhysics`, `PhysicsAggregate`, `PhysicsBody/Shape`): https://doc.babylonjs.com/features/featuresDeepDive/physics/usingPhysicsEngine and https://github.com/BabylonJS/Documentation/blob/master/content/features/featuresDeepDive/physics/v2/usingPhysicsEngine.md
 - `@babylonjs/havok` npm (init pattern, `await HavokPhysics()`, `locateFile`): https://www.npmjs.com/package/@babylonjs/havok
